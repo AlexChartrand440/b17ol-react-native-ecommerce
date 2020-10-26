@@ -15,11 +15,11 @@ import {
   Body,
 } from 'native-base';
 
-export default function Login({ navigation }) {
+export default function Forgot({ navigation }) {
   const [email, setEmail] = useState('');
 
   function resetPassword() {
-    navigation.navigate('ConfirmPassword');
+    navigation.navigate('Reset Password');
   }
 
   return (
