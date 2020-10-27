@@ -7,18 +7,14 @@ import {
   Text,
 } from 'native-base';
 
-// import components
-import Footer from '../components/Footer';
-
-export default function Home() {
+export default function Bag() {
   return (
     <Container style={styles.parent}>
       <Content padder>
         <Text>
-          This is Home Section
+          This is Bag Section
         </Text>
       </Content>
-      {/* <Footer /> */}
     </Container>
   );
 }
