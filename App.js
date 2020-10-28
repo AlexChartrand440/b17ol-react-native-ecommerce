@@ -17,7 +17,25 @@ import Profile from './src/screens/Profile';
 
 // import navigator
 const Stack = createStackNavigator();
+const ShoppingStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+
+function ShoppingStackScreen() {
+  return (
+    <ShoppingStack.Navigator>
+      <ShoppingStack.Screen
+        name="Category"
+        component={Shop}
+        options={{
+          title: 'Category',
+          headerTitleStyle: {
+            textAlign: 'center',
+          },
+        }}
+      />
+    </ShoppingStack.Navigator>
+  );
+}
 
 export default function App() {
   // for slicing purpose
@@ -66,7 +84,7 @@ export default function App() {
           />
           <Tab.Screen
             name="Shop"
-            component={Shop}
+            component={ShoppingStackScreen}
             options={{
               tabBarIcon: (focused, color, size) => (
                 <Icon

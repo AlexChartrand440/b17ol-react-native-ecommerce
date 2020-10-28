@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
     borderWidth: 0,
     borderColor: 'white',
-    elevation: 0,
+    elevation: 2,
     width: 150,
   },
   image: {
