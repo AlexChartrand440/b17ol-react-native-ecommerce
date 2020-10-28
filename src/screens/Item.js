@@ -26,22 +26,21 @@ export default function Item({ navigation }) {
 
   return (
     <Container style={styles.parent}>
+      <View style={styles.advFunc}>
+        <TouchableOpacity>
+          <View style={styles.advFuncIcon}>
+            <Icon type="MaterialIcons" name="sort" />
+            <Text style={styles.subtitle}>{' '}Filters</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <View style={styles.advFuncIcon}>
+            <Icon type="MaterialIcons" name="sort" />
+            <Text style={styles.subtitle}>{' '}Price: lowest to high</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
       <Content padder>
-        <View style={styles.advFunc}>
-          <TouchableOpacity>
-            <View style={styles.advFuncIcon}>
-              <Icon type="MaterialIcons" name="sort" />
-              <Text style={styles.subtitle}>{' '}Filters</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View style={styles.advFuncIcon}>
-              <Icon type="MaterialIcons" name="sort" />
-              <Text style={styles.subtitle}>{' '}Price: lowest to high</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-
         {/* Product list section */}
         <View style={styles.productList}>
           {Array(10).fill(
@@ -120,6 +119,10 @@ const styles = StyleSheet.create({
   advFunc: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingLeft: 16,
+    paddingRight: 16,
+    paddingTop: 8,
+    backgroundColor: '#ffff',
   },
   advFuncIcon: {
     flexDirection: 'row',
