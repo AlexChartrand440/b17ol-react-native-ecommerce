@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import { StyleSheet, Image, TouchableOpacity } from 'react-native';
+import {StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {
   Container,
   Content,
@@ -14,11 +14,20 @@ import {
 // import dummy category image
 import Category from '../assets/img/hp.png';
 
-export default function Shop() {
+export default function Shop({navigation}) {
+  function getProductByCategory() {
+    navigation.navigate('Item');
+  }
+
   return (
     <Container style={styles.parent}>
       <Content padder>
-        <Button rounded block success style={styles.button}>
+        <Button
+          rounded
+          block
+          success
+          style={styles.button}
+          onPress={getProductByCategory}>
           <Text>View All Items</Text>
         </Button>
         <Text style={styles.header}>Choose category</Text>
@@ -28,13 +37,11 @@ export default function Shop() {
           <Card style={styles.card}>
             <CardItem style={styles.cardItem}>
               <Body>
-                <TouchableOpacity>
-                  <Text style={styles.categoryText}>
-                    Smartphone
-                </Text>
+                <TouchableOpacity onPress={getProductByCategory}>
+                  <Text style={styles.categoryText}>Smartphone</Text>
                 </TouchableOpacity>
               </Body>
-            </CardItem >
+            </CardItem>
             <CardItem cardBody style={styles.cardItem}>
               <Image source={Category} style={styles.image} />
             </CardItem>

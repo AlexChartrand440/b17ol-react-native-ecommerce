@@ -3,6 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Icon} from 'native-base';
+import {StyleSheet} from 'react-native';
 
 // import screens
 import Signup from './src/screens/Signup';
@@ -12,6 +13,7 @@ import ResetPassword from './src/screens/ResetPassword';
 
 import Home from './src/screens/Home';
 import Shop from './src/screens/Shop';
+import Item from './src/screens/Item';
 import Bag from './src/screens/Bag';
 import Profile from './src/screens/Profile';
 
@@ -28,13 +30,26 @@ function ShoppingStackScreen() {
         component={Shop}
         options={{
           title: 'Category',
+          headerRight: iconSearch,
+        }}
+      />
+      <ShoppingStack.Screen
+        name="Item"
+        component={Item}
+        options={{
+          title: '',
           headerTitleStyle: {
             textAlign: 'center',
           },
+          headerRight: iconSearch,
         }}
       />
     </ShoppingStack.Navigator>
   );
+}
+
+function iconSearch() {
+  return <Icon type="MaterialIcons" name="search" style={styles.iconSearch} />;
 }
 
 export default function App() {
@@ -129,3 +144,9 @@ export default function App() {
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  iconSearch: {
+    paddingRight: 16,
+  },
+});
