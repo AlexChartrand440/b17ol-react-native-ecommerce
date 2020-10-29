@@ -15,7 +15,11 @@ import {
 
 import User from '../assets/img/avatar.png';
 
-export default function Profile() {
+export default function Profile({ navigation }) {
+  function getShippingAddress() {
+    navigation.navigate('Shipping Address');
+  }
+
   return (
     <Container style={styles.parent}>
       <Content padder>
@@ -38,7 +42,7 @@ export default function Profile() {
               <Icon type="MaterialIcons" name="arrow-forward" />
             </Right>
           </ListItem>
-          <ListItem>
+          <ListItem onPress={getShippingAddress}>
             <Left>
               <Text style={styles.listItemText}>Shipping Addresses</Text>
             </Left>

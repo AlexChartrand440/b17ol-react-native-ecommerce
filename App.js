@@ -19,6 +19,7 @@ import Bag from './src/screens/Bag';
 import Checkout from './src/screens/Checkout';
 import Success from './src/screens/Success';
 import Profile from './src/screens/Profile';
+import ShippingAddress from './src/screens/ShippingAddress';
 
 // import navigator
 const Stack = createStackNavigator();
@@ -171,6 +172,11 @@ export default function App() {
             name="Success"
             component={Success}
             options={{headerShown: false}}
+          />
+          <MainStack.Screen
+            name="Shipping Address"
+            component={ShippingAddress}
+            options={{headerTitleAlign: 'center'}}
           />
         </MainStack.Navigator>
       )}

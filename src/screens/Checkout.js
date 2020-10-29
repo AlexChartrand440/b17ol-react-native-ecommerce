@@ -20,6 +20,10 @@ export default function Checkout({ navigation }) {
     navigation.navigate('Success');
   }
 
+  function changeShippingAddress() {
+    navigation.navigate('Shipping Address');
+  }
+
   return (
     <Container style={styles.parent}>
       <Content padder>
@@ -29,7 +33,7 @@ export default function Checkout({ navigation }) {
             <Body>
               <View style={styles.floatingText}>
                 <Text style={[styles.text, styles.bold]}>Matilda Brown | 081233448833</Text>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={changeShippingAddress}>
                   <Text style={[styles.text, styles.bold, styles.link]}>Change</Text>
                 </TouchableOpacity>
               </View>
