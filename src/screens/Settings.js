@@ -19,6 +19,10 @@ export default function Settings({ navigation }) {
     navigation.navigate('Update Password');
   }
 
+  function updateProfile() {
+    navigation.navigate('Update Profile');
+  }
+
   return (
     <Container style={styles.parent}>
       <Content padder>
@@ -27,7 +31,7 @@ export default function Settings({ navigation }) {
         {/* Personal Information */}
         <View style={[styles.spaceBetween, styles.marginBottom]}>
           <Text style={styles.subHeader}>Personal Information</Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={updateProfile}>
             <Text style={styles.text}>Edit</Text>
           </TouchableOpacity>
         </View>
