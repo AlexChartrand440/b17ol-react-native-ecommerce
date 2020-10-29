@@ -23,6 +23,7 @@ import ShippingAddress from './src/screens/ShippingAddress';
 import AddShippingAddress from './src/screens/AddShippingAddress';
 import UpdateShippingAddress from './src/screens/UpdateShippingAddress';
 import Settings from './src/screens/Settings';
+import UpdatePassword from './src/screens/UpdatePassword';
 
 // import navigator
 const Stack = createStackNavigator();
@@ -201,6 +202,14 @@ export default function App() {
             name="Setting"
             component={Settings}
             options={{title: ''}}
+          />
+          <MainStack.Screen
+            name="Update Password"
+            component={UpdatePassword}
+            options={{
+              headerTitleAlign: 'center',
+              title: 'Change Password',
+            }}
           />
         </MainStack.Navigator>
       )}

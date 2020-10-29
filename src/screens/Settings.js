@@ -14,7 +14,11 @@ import {
   Input,
 } from 'native-base';
 
-export default function Settings() {
+export default function Settings({ navigation }) {
+  function updatePassword() {
+    navigation.navigate('Update Password');
+  }
+
   return (
     <Container style={styles.parent}>
       <Content padder>
@@ -51,7 +55,7 @@ export default function Settings() {
         {/* Password */}
         <View style={[styles.spaceBetween, styles.marginBottom]}>
           <Text style={styles.subHeader}>Password</Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={updatePassword}>
             <Text style={styles.text}>Change</Text>
           </TouchableOpacity>
         </View>
