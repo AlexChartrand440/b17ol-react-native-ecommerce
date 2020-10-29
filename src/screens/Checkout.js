@@ -15,7 +15,11 @@ import CheckBox from '@react-native-community/checkbox';
 // import logo image
 import Logo from '../assets/img/logo.png';
 
-export default function Checkout() {
+export default function Checkout({ navigation }) {
+  function submitOrder() {
+    navigation.navigate('Success');
+  }
+
   return (
     <Container style={styles.parent}>
       <Content padder>
@@ -61,7 +65,8 @@ export default function Checkout() {
           rounded
           block
           success
-          style={styles.floatingButton}>
+          style={styles.floatingButton}
+          onPress={submitOrder}>
           <Text>submit order</Text>
         </Button>
       </View>

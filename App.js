@@ -17,6 +17,7 @@ import Item from './src/screens/Item';
 import Detail from './src/screens/Detail';
 import Bag from './src/screens/Bag';
 import Checkout from './src/screens/Checkout';
+import Success from './src/screens/Success';
 import Profile from './src/screens/Profile';
 
 // import navigator
@@ -165,6 +166,11 @@ export default function App() {
             name="Checkout"
             component={Checkout}
             options={{headerTitleAlign: 'center'}}
+          />
+          <MainStack.Screen
+            name="Success"
+            component={Success}
+            options={{headerShown: false}}
           />
         </MainStack.Navigator>
       )}
