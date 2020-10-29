@@ -16,6 +16,7 @@ import Shop from './src/screens/Shop';
 import Item from './src/screens/Item';
 import Detail from './src/screens/Detail';
 import Bag from './src/screens/Bag';
+import Checkout from './src/screens/Checkout';
 import Profile from './src/screens/Profile';
 
 // import navigator
@@ -159,6 +160,11 @@ export default function App() {
               headerTitleAlign: 'center',
               headerRight: iconShare,
             }}
+          />
+          <MainStack.Screen
+            name="Checkout"
+            component={Checkout}
+            options={{headerTitleAlign: 'center'}}
           />
         </MainStack.Navigator>
       )}

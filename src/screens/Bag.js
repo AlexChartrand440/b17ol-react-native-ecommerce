@@ -1,11 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import {
   Container,
   Content,
@@ -20,13 +15,15 @@ import {
 // import dummy product image
 import Product from '../assets/img/item1.png';
 
-export default function Bag() {
+export default function Bag({ navigation }) {
+  function checkout() {
+    navigation.navigate('Checkout');
+  }
+
   return (
     <Container style={styles.parent}>
       <Content padder>
-        <Text style={styles.header}>
-          My Bag
-        </Text>
+        <Text style={styles.header}>My Bag</Text>
         {Array(7).fill(
           <Card style={styles.card}>
             <CardItem cardBody style={styles.cardImage}>
@@ -41,25 +38,41 @@ export default function Bag() {
                   </View>
                   <View>
                     <TouchableOpacity>
-                      <Icon type="MaterialIcons" name="delete" style={styles.delete} />
+                      <Icon
+                        type="MaterialIcons"
+                        name="delete"
+                        style={styles.delete}
+                      />
                     </TouchableOpacity>
                   </View>
                 </View>
                 <View style={styles.cardHeader}>
                   <View style={styles.card}>
                     <TouchableOpacity style={styles.counterButton}>
-                      <Icon type="MaterialIcons" name="remove" style={styles.counterIcon} />
+                      <Icon
+                        type="MaterialIcons"
+                        name="remove"
+                        style={styles.counterIcon}
+                      />
                     </TouchableOpacity>
-                    <Text style={styles.counterText}>{'  '}1{'  '}</Text>
+                    <Text style={styles.counterText}>
+                      {'  '}1{'  '}
+                    </Text>
                     <TouchableOpacity style={styles.counterButton}>
-                      <Icon type="MaterialIcons" name="add" style={styles.counterIcon} />
+                      <Icon
+                        type="MaterialIcons"
+                        name="add"
+                        style={styles.counterIcon}
+                      />
                     </TouchableOpacity>
                   </View>
-                  <Text style={[styles.counterText, styles.priceText]}>Rp149.000</Text>
+                  <Text style={[styles.counterText, styles.priceText]}>
+                    Rp149.000
+                  </Text>
                 </View>
               </Body>
             </CardItem>
-          </Card>
+          </Card>,
         )}
       </Content>
       <View style={styles.floatingBar}>
@@ -67,7 +80,12 @@ export default function Bag() {
           <Text style={styles.counterText}>Total amount</Text>
           <Text style={styles.totalPrice}>Rp949.000</Text>
         </View>
-        <Button rounded block success style={styles.floatingButton}>
+        <Button
+          rounded
+          block
+          success
+          style={styles.floatingButton}
+          onPress={checkout}>
           <Text>Checkout</Text>
         </Button>
       </View>
@@ -107,7 +125,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   delete: {
-    color: 'tomato',
+    color: '#DB3022',
     fontSize: 20,
   },
   cardTitle: {
