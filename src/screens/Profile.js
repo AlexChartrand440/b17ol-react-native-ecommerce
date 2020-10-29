@@ -20,6 +20,10 @@ export default function Profile({ navigation }) {
     navigation.navigate('Shipping Address');
   }
 
+  function getSetting() {
+    navigation.navigate('Setting');
+  }
+
   return (
     <Container style={styles.parent}>
       <Content padder>
@@ -50,7 +54,7 @@ export default function Profile({ navigation }) {
               <Icon type="MaterialIcons" name="arrow-forward" />
             </Right>
           </ListItem>
-          <ListItem>
+          <ListItem onPress={getSetting}>
             <Left>
               <Text style={styles.listItemText}>Settings</Text>
             </Left>
