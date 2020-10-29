@@ -21,6 +21,7 @@ import Success from './src/screens/Success';
 import Profile from './src/screens/Profile';
 import ShippingAddress from './src/screens/ShippingAddress';
 import AddShippingAddress from './src/screens/AddShippingAddress';
+import UpdateShippingAddress from './src/screens/UpdateShippingAddress';
 
 // import navigator
 const Stack = createStackNavigator();
@@ -182,7 +183,18 @@ export default function App() {
           <MainStack.Screen
             name="Add Shipping Address"
             component={AddShippingAddress}
-            options={{headerTitleAlign: 'center'}}
+            options={{
+              headerTitleAlign: 'center',
+              title: 'New Shipping Address',
+            }}
+          />
+          <MainStack.Screen
+            name="Update Shipping Address"
+            component={UpdateShippingAddress}
+            options={{
+              headerTitleAlign: 'center',
+              title: 'Edit Shipping Address',
+            }}
           />
         </MainStack.Navigator>
       )}

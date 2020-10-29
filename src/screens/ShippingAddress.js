@@ -15,6 +15,11 @@ export default function ShippingAddress({ navigation }) {
   function addShippingAddress() {
     navigation.navigate('Add Shipping Address');
   }
+
+  function updateShippingAddress() {
+    navigation.navigate('Update Shipping Address');
+  }
+
   return (
     <Container style={styles.parent}>
       <Content padder>
@@ -29,7 +34,7 @@ export default function ShippingAddress({ navigation }) {
                       Matilda Brown | 081233448833
                     </Text>
                   </TouchableOpacity>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={updateShippingAddress}>
                     <Text style={[styles.text, styles.bold, styles.link]}>
                       Update
                     </Text>
