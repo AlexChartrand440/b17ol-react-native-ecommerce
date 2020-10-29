@@ -11,7 +11,10 @@ import {
   Button,
 } from 'native-base';
 
-export default function ShippingAddress() {
+export default function ShippingAddress({ navigation }) {
+  function addShippingAddress() {
+    navigation.navigate('Add Shipping Address');
+  }
   return (
     <Container style={styles.parent}>
       <Content padder>
@@ -22,18 +25,32 @@ export default function ShippingAddress() {
               <Body>
                 <View style={styles.cardHeader}>
                   <TouchableOpacity>
-                    <Text style={[styles.text, styles.bold]}>Matilda Brown | 081233448833</Text>
+                    <Text style={[styles.text, styles.bold]}>
+                      Matilda Brown | 081233448833
+                    </Text>
                   </TouchableOpacity>
                   <TouchableOpacity>
-                    <Text style={[styles.text, styles.bold, styles.link]}>Update</Text>
+                    <Text style={[styles.text, styles.bold, styles.link]}>
+                      Update
+                    </Text>
                   </TouchableOpacity>
                 </View>
-                <Text style={styles.text}>Perumahan Sapphire Mediterania, Wiradadi, Kec. Sokaraja, Kabupaten Banyumas, Jawa Tengah, 53181 [Tokopedia Note: blok c 16] Sokaraja, Kab. Banyumas, 53181</Text>
+                <Text style={styles.text}>
+                  Perumahan Sapphire Mediterania, Wiradadi, Kec. Sokaraja,
+                  Kabupaten Banyumas, Jawa Tengah, 53181 [Tokopedia Note: blok c
+                  16] Sokaraja, Kab. Banyumas, 53181
+                </Text>
               </Body>
             </CardItem>
-          </Card>
+          </Card>,
         )}
-        <Button bordered rounded block dark style={styles.button}>
+        <Button
+          bordered
+          rounded
+          block
+          dark
+          style={styles.button}
+          onPress={addShippingAddress}>
           <Text>add new address</Text>
         </Button>
       </Content>

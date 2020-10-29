@@ -20,6 +20,7 @@ import Checkout from './src/screens/Checkout';
 import Success from './src/screens/Success';
 import Profile from './src/screens/Profile';
 import ShippingAddress from './src/screens/ShippingAddress';
+import AddShippingAddress from './src/screens/AddShippingAddress';
 
 // import navigator
 const Stack = createStackNavigator();
@@ -176,6 +177,11 @@ export default function App() {
           <MainStack.Screen
             name="Shipping Address"
             component={ShippingAddress}
+            options={{headerTitleAlign: 'center'}}
+          />
+          <MainStack.Screen
+            name="Add Shipping Address"
+            component={AddShippingAddress}
             options={{headerTitleAlign: 'center'}}
           />
         </MainStack.Navigator>
