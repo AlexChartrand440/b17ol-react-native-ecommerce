@@ -54,6 +54,14 @@ export default function Profile() {
               <Icon type="MaterialIcons" name="arrow-forward" />
             </Right>
           </ListItem>
+          <ListItem>
+            <Left>
+              <Text style={styles.listItemText}>Logout</Text>
+            </Left>
+            <Right>
+              <Icon type="MaterialIcons" name="arrow-forward" />
+            </Right>
+          </ListItem>
         </List>
       </Content>
     </Container>
