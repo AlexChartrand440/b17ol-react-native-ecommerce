@@ -24,6 +24,10 @@ export default function Item({ navigation }) {
     navigation.setOptions({ title: 'All Items' });
   }, [navigation]);
 
+  function getItemDetail() {
+    navigation.navigate('Item Detail');
+  }
+
   return (
     <Container style={styles.parent}>
       <View style={styles.advFunc}>
@@ -50,7 +54,7 @@ export default function Item({ navigation }) {
               </CardItem>
               <CardItem>
                 <Body>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={getItemDetail}>
                     <Text numberOfLines={2} ellipsizeMode="tail" style={styles.product}>Zalora Muslim Man</Text>
                   </TouchableOpacity>
                   <Text style={styles.price}>Rp149.000</Text>

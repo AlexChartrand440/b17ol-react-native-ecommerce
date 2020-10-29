@@ -14,12 +14,14 @@ import ResetPassword from './src/screens/ResetPassword';
 import Home from './src/screens/Home';
 import Shop from './src/screens/Shop';
 import Item from './src/screens/Item';
+import Detail from './src/screens/Detail';
 import Bag from './src/screens/Bag';
 import Profile from './src/screens/Profile';
 
 // import navigator
 const Stack = createStackNavigator();
 const ShoppingStack = createStackNavigator();
+const MainStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function ShoppingStackScreen() {
@@ -31,6 +33,7 @@ function ShoppingStackScreen() {
         options={{
           title: 'Category',
           headerRight: iconSearch,
+          headerTitleAlign: 'center',
         }}
       />
       <ShoppingStack.Screen
@@ -38,9 +41,7 @@ function ShoppingStackScreen() {
         component={Item}
         options={{
           title: '',
-          headerTitleStyle: {
-            textAlign: 'center',
-          },
+          headerTitleAlign: 'center',
           headerRight: iconSearch,
         }}
       />
@@ -48,8 +49,74 @@ function ShoppingStackScreen() {
   );
 }
 
+function MainStackScreen() {
+  return (
+    <Tab.Navigator
+      tabBarOptions={{
+        activeTintColor: 'green',
+        inactiveTintColor: 'gray',
+      }}>
+      <Tab.Screen
+        name="Home"
+        component={Home}
+        options={{
+          tabBarIcon: (focused, color, size) => (
+            <Icon type="MaterialIcons" name="home" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Shop"
+        component={ShoppingStackScreen}
+        options={{
+          tabBarIcon: (focused, color, size) => (
+            <Icon
+              type="MaterialIcons"
+              name="shopping-cart"
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Bag"
+        component={Bag}
+        options={{
+          tabBarIcon: (focused, color, size) => (
+            <Icon
+              type="MaterialIcons"
+              name="shopping-basket"
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          tabBarIcon: (focused, color, size) => (
+            <Icon
+              type="MaterialIcons"
+              name="person"
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  );
+}
+
 function iconSearch() {
-  return <Icon type="MaterialIcons" name="search" style={styles.iconSearch} />;
+  return <Icon type="MaterialIcons" name="search" style={styles.icon} />;
+}
+
+function iconShare() {
+  return <Icon type="MaterialIcons" name="share" style={styles.icon} />;
 }
 
 export default function App() {
@@ -78,75 +145,29 @@ export default function App() {
           />
         </Stack.Navigator>
       ) : (
-        <Tab.Navigator
-          tabBarOptions={{
-            activeTintColor: 'green',
-            inactiveTintColor: 'gray',
-          }}>
-          <Tab.Screen
-            name="Home"
-            component={Home}
+        <MainStack.Navigator>
+          <MainStack.Screen
+            name="Main"
+            component={MainStackScreen}
+            options={{headerShown: false}}
+          />
+          <MainStack.Screen
+            name="Item Detail"
+            component={Detail}
             options={{
-              tabBarIcon: (focused, color, size) => (
-                <Icon
-                  type="MaterialIcons"
-                  name="home"
-                  size={size}
-                  color={color}
-                />
-              ),
+              title: '',
+              headerTitleAlign: 'center',
+              headerRight: iconShare,
             }}
           />
-          <Tab.Screen
-            name="Shop"
-            component={ShoppingStackScreen}
-            options={{
-              tabBarIcon: (focused, color, size) => (
-                <Icon
-                  type="MaterialIcons"
-                  name="shopping-cart"
-                  size={size}
-                  color={color}
-                />
-              ),
-            }}
-          />
-          <Tab.Screen
-            name="Bag"
-            component={Bag}
-            options={{
-              tabBarIcon: (focused, color, size) => (
-                <Icon
-                  type="MaterialIcons"
-                  name="shopping-basket"
-                  size={size}
-                  color={color}
-                />
-              ),
-            }}
-          />
-          <Tab.Screen
-            name="Profile"
-            component={Profile}
-            options={{
-              tabBarIcon: (focused, color, size) => (
-                <Icon
-                  type="MaterialIcons"
-                  name="person"
-                  size={size}
-                  color={color}
-                />
-              ),
-            }}
-          />
-        </Tab.Navigator>
+        </MainStack.Navigator>
       )}
     </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  iconSearch: {
+  icon: {
     paddingRight: 16,
   },
 });

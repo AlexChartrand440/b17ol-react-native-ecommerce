@@ -20,7 +20,15 @@ import {
 // import dummy product image
 import Product from '../assets/img/item1.png';
 
-export default function Home() {
+export default function Home({ navigation }) {
+  function viewCategory() {
+    navigation.navigate('Item');
+  }
+
+  function getItemDetail() {
+    navigation.navigate('Item Detail');
+  }
+
   return (
     <Container style={styles.parent}>
       <Content padder>
@@ -30,7 +38,7 @@ export default function Home() {
             <Text style={styles.title}>New</Text>
             <Text style={styles.subtitle}>You’ve never seen it before!</Text>
           </View>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={viewCategory}>
             <Text style={styles.subtitle}>View all</Text>
           </TouchableOpacity>
         </View>
@@ -42,7 +50,7 @@ export default function Home() {
               </CardItem>
               <CardItem>
                 <Body>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={getItemDetail}>
                     <Text numberOfLines={2} ellipsizeMode="tail" style={styles.product}>Zalora Muslim Man</Text>
                   </TouchableOpacity>
                   <Text style={styles.price}>Rp149.000</Text>
@@ -67,7 +75,7 @@ export default function Home() {
             <Text style={styles.title}>Popular</Text>
             <Text style={styles.subtitle}>Find clothes that are trending recently!</Text>
           </View>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={viewCategory}>
             <Text style={styles.subtitle}>View all</Text>
           </TouchableOpacity>
         </View>
@@ -79,7 +87,7 @@ export default function Home() {
               </CardItem>
               <CardItem>
                 <Body>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={getItemDetail}>
                     <Text numberOfLines={2} ellipsizeMode="tail" style={styles.product}>Zalora Muslim Man</Text>
                   </TouchableOpacity>
                   <Text style={styles.price}>Rp149.000</Text>
