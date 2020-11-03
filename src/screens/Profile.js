@@ -12,16 +12,27 @@ import {
   Right,
   Icon,
 } from 'native-base';
+import { useDispatch } from 'react-redux';
 
+// import default avatar
 import User from '../assets/img/avatar.png';
 
+// import actions
+import authAction from '../redux/actions/auth';
+
 export default function Profile({ navigation }) {
+  const dispatch = useDispatch();
+
   function getShippingAddress() {
     navigation.navigate('Shipping Address');
   }
 
   function getSetting() {
     navigation.navigate('Setting');
+  }
+
+  function logout() {
+    dispatch(authAction.logout());
   }
 
   return (
@@ -62,7 +73,7 @@ export default function Profile({ navigation }) {
               <Icon type="MaterialIcons" name="arrow-forward" />
             </Right>
           </ListItem>
-          <ListItem>
+          <ListItem onPress={logout}>
             <Left>
               <Text style={styles.listItemText}>Logout</Text>
             </Left>
