@@ -14,8 +14,13 @@ import {
   CardItem,
   Body,
 } from 'native-base';
+import { useDispatch } from 'react-redux';
+
+// import actions
+import loginAction from '../redux/actions/auth';
 
 export default function Login({ navigation }) {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -24,7 +29,11 @@ export default function Login({ navigation }) {
   }
 
   function doLogin() {
-    navigation.navigate('Home');
+    const data = {
+      email,
+      password,
+    };
+    dispatch(loginAction.login(data));
   }
 
   return (
