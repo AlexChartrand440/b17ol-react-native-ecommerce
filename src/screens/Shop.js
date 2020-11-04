@@ -40,8 +40,7 @@ export default function Shop({ navigation }) {
           rounded
           block
           success
-          style={styles.button}
-          onPress={getProductByCategory}>
+          style={styles.button}>
           <Text>View All Items</Text>
         </Button>
         <Text style={styles.header}>Choose category</Text>

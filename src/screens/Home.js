@@ -54,7 +54,7 @@ export default function Home({ navigation }) {
             <Text style={styles.title}>New</Text>
             <Text style={styles.subtitle}>You’ve never seen it before!</Text>
           </View>
-          <TouchableOpacity onPress={viewCategory}>
+          <TouchableOpacity>
             <Text style={styles.subtitle}>View all</Text>
           </TouchableOpacity>
         </View>
@@ -99,7 +99,7 @@ export default function Home({ navigation }) {
             <Text style={styles.title}>Popular</Text>
             <Text style={styles.subtitle}>Find clothes that are trending recently!</Text>
           </View>
-          <TouchableOpacity onPress={viewCategory}>
+          <TouchableOpacity>
             <Text style={styles.subtitle}>View all</Text>
           </TouchableOpacity>
         </View>
