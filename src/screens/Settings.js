@@ -13,8 +13,11 @@ import {
   Label,
   Input,
 } from 'native-base';
+import { useSelector } from 'react-redux';
 
 export default function Settings({ navigation }) {
+  const profile = useSelector(state => state.profile);
+
   function updatePassword() {
     navigation.navigate('Update Password');
   }
@@ -35,26 +38,32 @@ export default function Settings({ navigation }) {
             <Text style={styles.text}>Edit</Text>
           </TouchableOpacity>
         </View>
-        <Card style={styles.card}>
-          <CardItem>
-            <Body>
-              <Item floatingLabel>
-                <Label style={styles.text}>Full name</Label>
-                <Input value="Matilda Brown" disabled />
-              </Item>
-            </Body>
-          </CardItem>
-        </Card>
-        <Card style={styles.card}>
-          <CardItem>
-            <Body>
-              <Item floatingLabel>
-                <Label style={styles.text}>Date of birth</Label>
-                <Input value="04/11/1995" disabled />
-              </Item>
-            </Body>
-          </CardItem>
-        </Card>
+        {(profile.profileData && !profile.profileIsError) && profile.profileData.map(user => {
+          return (
+            <View key={user.id}>
+              <Card style={styles.card}>
+                <CardItem>
+                  <Body>
+                    <Item floatingLabel>
+                      <Label style={styles.text}>Full name</Label>
+                      <Input value={user.name} disabled />
+                    </Item>
+                  </Body>
+                </CardItem>
+              </Card>
+              <Card style={styles.card}>
+                <CardItem>
+                  <Body>
+                    <Item floatingLabel>
+                      <Label style={styles.text}>Date of birth</Label>
+                      <Input value={user.birthday} disabled />
+                    </Item>
+                  </Body>
+                </CardItem>
+              </Card>
+            </View>
+          );
+        })}
 
         {/* Password */}
         <View style={[styles.spaceBetween, styles.marginBottom]}>
