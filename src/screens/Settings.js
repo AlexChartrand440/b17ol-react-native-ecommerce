@@ -14,6 +14,7 @@ import {
   Input,
 } from 'native-base';
 import { useSelector } from 'react-redux';
+import dayjs from 'dayjs';
 
 export default function Settings({ navigation }) {
   const profile = useSelector(state => state.profile);
@@ -56,7 +57,7 @@ export default function Settings({ navigation }) {
                   <Body>
                     <Item floatingLabel>
                       <Label style={styles.text}>Date of birth</Label>
-                      <Input value={user.birthday} disabled />
+                      <Input value={dayjs(user.birthday).format('DD/MM/YYYY')} disabled />
                     </Item>
                   </Body>
                 </CardItem>
