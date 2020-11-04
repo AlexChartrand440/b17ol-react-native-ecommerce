@@ -43,17 +43,18 @@ export default function Detail({ route, navigation }) {
   return (
     <Container style={styles.parent}>
       <Content padder>
-        {/* Item image */}
-        <ScrollView horizontal>
-          {Array(5).fill(
-            <Image source={Product} style={styles.image} />
-          )}
-        </ScrollView>
-
-        {/* Item information & description */}
         {(product.detailProductData.length > 0 && !product.detailProductIsLoading) && product.detailProductData.map(item => {
           return (
             <View>
+              {/* Item images */}
+              <ScrollView horizontal>
+                {item.images.split(',').map((img, i) => {
+                  return (
+                    <Image source={{ uri: `${API_URL}${img}` }} style={styles.image} />
+                  );
+                })}
+              </ScrollView>
+              {/* Item information & description */}
               <View style={styles.itemInfo}>
                 <Text style={[styles.header, styles.price]}>Rp{item.price.toString().replace(/(.)(?=(\d{3})+$)/g, '$1.')}</Text>
                 <Text numberOfLines={2} ellipsizeMode="tail" style={styles.header}>{item.name}</Text>
@@ -82,7 +83,7 @@ export default function Detail({ route, navigation }) {
           );
         })}
 
-        {/* Relavant item */}
+        {/* Relevant item */}
         <Text style={styles.relevantItem}>You can also like this</Text>
         <ScrollView horizontal>
           {Array(5).fill(
