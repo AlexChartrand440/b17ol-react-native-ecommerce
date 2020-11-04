@@ -35,8 +35,13 @@ export default function Detail({ route, navigation }) {
     dispatch(productAction.getRelevantProducts(category_id));
   }, [category, category_id, dispatch, id, navigation]);
 
-  function getItemDetail() {
-    navigation.navigate('Item Detail');
+  function getItemDetail(_id, _category_id, _category) {
+    dispatch(productAction.resetDetailProduct());
+    navigation.navigate('Item Detail', {
+      id: _id,
+      category_id: _category_id,
+      category: _category,
+    });
   }
 
   return (
@@ -95,7 +100,7 @@ export default function Detail({ route, navigation }) {
                 </CardItem>
                 <CardItem>
                   <Body>
-                    <TouchableOpacity onPress={getItemDetail}>
+                    <TouchableOpacity onPress={() => getItemDetail(item.id, item.category_id, item.category)}>
                       <Text numberOfLines={2} ellipsizeMode="tail" style={styles.product}>{item.name}</Text>
                     </TouchableOpacity>
                     <Text style={[styles.price, styles.description, styles.bold]}>Rp{item.price.toString().replace(/(.)(?=(\d{3})+$)/g, '$1.')}</Text>
