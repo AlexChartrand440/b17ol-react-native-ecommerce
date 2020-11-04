@@ -9,6 +9,11 @@ const initialState = {
   popularProductsIsLoading: false,
   popularProductsIsError: false,
   popularProductsAlertMsg: '',
+
+  detailProductData: [],
+  detailProductIsLoading: false,
+  detailProductIsError: false,
+  detailProductAlertMsg: '',
 };
 
 export default (state = initialState, action) => {
@@ -35,7 +40,7 @@ export default (state = initialState, action) => {
         newProductsData: action.payload.data.data,
       };
     }
-    case 'GET_POPULAR_PRODUCTS_PENDING' : {
+    case 'GET_POPULAR_PRODUCTS_PENDING': {
       return {
         ...state,
         popularProductsIsLoading: true,
@@ -55,6 +60,28 @@ export default (state = initialState, action) => {
         popularProductsIsLoading: false,
         popularProductsIsError: false,
         popularProductsData: action.payload.data.data,
+      };
+    }
+    case 'GET_DETAIL_PRODUCT_PENDING': {
+      return {
+        ...state,
+        detailProductIsLoading: true,
+      };
+    }
+    case 'GET_DETAIL_PRODUCT_REJECTED': {
+      return {
+        ...state,
+        detailProductIsLoading: false,
+        detailProductIsError: true,
+        detailProductAlertMsg: action.payload.response.data.message,
+      };
+    }
+    case 'GET_DETAIL_PRODUCT_FULFILLED': {
+      return {
+        ...state,
+        detailProductIsLoading: false,
+        detailProductIsError: false,
+        detailProductData: action.payload.data.data,
       };
     }
     default: {

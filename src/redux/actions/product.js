@@ -10,4 +10,8 @@ export default {
     type: 'GET_NEW_PRODUCTS',
     payload: http().get('/public/item?sort=desc&limit=10'),
   }),
+  getDetailProduct: (id) => ({
+    type: 'GET_DETAIL_PRODUCT',
+    payload: http().get(`/public/item/${id}`),
+  }),
 };

@@ -17,14 +17,24 @@ import {
   CardItem,
   Body,
 } from 'native-base';
+import { useDispatch, useSelector } from 'react-redux';
+import { API_URL } from '@env';
+
+// import actions
+import productAction from '../redux/actions/product';
 
 // import dummy product image
 import Product from '../assets/img/item1.png';
 
-export default function Detail({ navigation }) {
+export default function Detail({ route, navigation }) {
+  const { id, category_id, category } = route.params;
+  const dispatch = useDispatch();
+  const product = useSelector(state => state.product);
+
   useEffect(() => {
-    navigation.setOptions({ title: 'Category Name' });
-  }, [navigation]);
+    navigation.setOptions({ title: category });
+    dispatch(productAction.getDetailProduct(id));
+  }, [category, dispatch, id, navigation]);
 
   function getItemDetail() {
     navigation.navigate('Item Detail');
@@ -41,25 +51,36 @@ export default function Detail({ navigation }) {
         </ScrollView>
 
         {/* Item information & description */}
-        <View style={styles.itemInfo}>
-          <Text style={[styles.header, styles.price]}>Rp149.000</Text>
-          <Text numberOfLines={2} ellipsizeMode="tail" style={styles.header}>Zalora Muslim Man</Text>
-          <Text style={styles.subtitle}>Zalora Cloth</Text>
-          <View style={styles.rating}>
-            <Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />
-            <Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />
-            <Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />
-            <Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />
-            <Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />
-            <Text style={styles.subtitle}>{' '}(13)</Text>
-          </View>
-        </View>
-        <View>
-          <Text style={styles.bold}>Description</Text>
-          <Text style={styles.description}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec non magna rutrum, pellentesque augue eu, sagittis velit. Phasellus quis laoreet dolor. Fusce nec pharetra quam. Interdum et malesuada fames ac ante ipsum primis in faucibus. Praesent sed enim vel turpis blandit imperdiet ac ac felis. Etiam tincidunt tristique placerat. Pellentesque a consequat mauris, vel suscipit ipsum. Donec ac mauris vitae diam commodo vehicula. Donec quam elit, sollicitudin eu nisl at, ornare suscipit magna. Donec non magna rutrum, pellentesque augue eu, sagittis velit. Phasellus quis laoreet dolor. Fusce nec pharetra quam. Interdum et malesuada fames ac ante ipsum primis in faucibus. Praesent sed enim vel turpis blandit imperdiet ac ac felis. In ultricies rutrum tempus. Mauris vel molestie orci.
-          </Text>
-        </View>
+        {(product.detailProductData.length > 0 && !product.detailProductIsLoading) && product.detailProductData.map(item => {
+          return (
+            <View>
+              <View style={styles.itemInfo}>
+                <Text style={[styles.header, styles.price]}>Rp{item.price.toString().replace(/(.)(?=(\d{3})+$)/g, '$1.')}</Text>
+                <Text numberOfLines={2} ellipsizeMode="tail" style={styles.header}>{item.name}</Text>
+                <Text style={styles.subtitle}>{item.store_name}</Text>
+                <View style={styles.rating}>
+                  {item.rating === 0 && Array(5).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
+                  {item.rating > 0 && item.rating < 2 && Array(1).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
+                  {item.rating > 0 && item.rating < 2 && Array(4).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
+                  {item.rating >= 2 && item.rating < 3 && Array(2).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
+                  {item.rating >= 2 && item.rating < 3 && Array(3).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
+                  {item.rating >= 3 && item.rating < 4 && Array(3).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
+                  {item.rating >= 3 && item.rating < 4 && Array(2).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
+                  {item.rating >= 4 && item.rating < 5 && Array(4).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
+                  {item.rating >= 4 && item.rating < 5 && Array(1).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
+                  {item.rating === 5 && Array(5).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
+                  <Text style={styles.subtitle}>{' '}({item.count_review})</Text>
+                </View>
+              </View>
+              <View>
+                <Text style={styles.bold}>Description</Text>
+                <Text style={styles.description}>
+                  {item.description}
+                </Text>
+              </View>
+            </View>
+          );
+        })}
 
         {/* Relavant item */}
         <Text style={styles.relevantItem}>You can also like this</Text>
@@ -141,6 +162,10 @@ const styles = StyleSheet.create({
   ratingIcon: {
     fontSize: 16,
     color: 'orange',
+  },
+  ratingIconInactive: {
+    fontSize: 16,
+    color: 'gray',
   },
   relevantItem: {
     fontWeight: 'bold',

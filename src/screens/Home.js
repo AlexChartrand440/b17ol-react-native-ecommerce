@@ -29,14 +29,18 @@ export default function Home({ navigation }) {
   useEffect(() => {
     dispatch(productAction.getPopularProducts());
     dispatch(productAction.getNewProducts());
-  }, []);
+  }, [dispatch]);
 
   function viewCategory() {
     navigation.navigate('Item');
   }
 
-  function getItemDetail() {
-    navigation.navigate('Item Detail');
+  function getItemDetail(id, category_id, category) {
+    navigation.navigate('Item Detail', {
+      id,
+      category_id,
+      category,
+    });
   }
 
   return (
@@ -61,7 +65,7 @@ export default function Home({ navigation }) {
                 </CardItem>
                 <CardItem>
                   <Body>
-                    <TouchableOpacity onPress={getItemDetail}>
+                    <TouchableOpacity onPress={() => getItemDetail(item.id, item.category_id, item.category)}>
                       <Text numberOfLines={2} ellipsizeMode="tail" style={styles.product}>{item.name}</Text>
                     </TouchableOpacity>
                     <Text style={styles.price}>Rp{item.price.toString().replace(/(.)(?=(\d{3})+$)/g, '$1.')}</Text>
@@ -105,7 +109,7 @@ export default function Home({ navigation }) {
                 </CardItem>
                 <CardItem>
                   <Body>
-                    <TouchableOpacity onPress={getItemDetail}>
+                    <TouchableOpacity onPress={() => getItemDetail(item.id, item.category_id, item.category)}>
                       <Text numberOfLines={2} ellipsizeMode="tail" style={styles.product}>{item.name}</Text>
                     </TouchableOpacity>
                     <Text style={styles.price}>Rp{item.price.toString().replace(/(.)(?=(\d{3})+$)/g, '$1.')}</Text>
