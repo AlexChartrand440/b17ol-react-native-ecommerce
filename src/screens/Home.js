@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   StyleSheet,
   Image,
@@ -16,11 +16,24 @@ import {
   Body,
   Icon,
 } from 'native-base';
+import { useDispatch, useSelector } from 'react-redux';
+import { API_URL } from '@env';
+
+// import actions
+import productAction from '../redux/actions/product';
 
 // import dummy product image
 import Product from '../assets/img/item1.png';
 
 export default function Home({ navigation }) {
+  const dispatch = useDispatch();
+  const product = useSelector(state => state.product);
+
+  useEffect(() => {
+    dispatch(productAction.getPopularProducts());
+    dispatch(productAction.getNewProducts());
+  }, []);
+
   function viewCategory() {
     navigation.navigate('Item');
   }
@@ -43,30 +56,37 @@ export default function Home({ navigation }) {
           </TouchableOpacity>
         </View>
         <ScrollView horizontal>
-          {Array(5).fill(
-            <Card style={styles.card}>
-              <CardItem cardBody>
-                <Image source={Product} style={styles.image} />
-              </CardItem>
-              <CardItem>
-                <Body>
-                  <TouchableOpacity onPress={getItemDetail}>
-                    <Text numberOfLines={2} ellipsizeMode="tail" style={styles.product}>Zalora Muslim Man</Text>
-                  </TouchableOpacity>
-                  <Text style={styles.price}>Rp149.000</Text>
-                  <Text style={styles.subtitle}>Zalora Cloth</Text>
-                  <View style={styles.rating}>
-                    <Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />
-                    <Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />
-                    <Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />
-                    <Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />
-                    <Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />
-                    <Text style={styles.subtitle}>{' '}(13)</Text>
-                  </View>
-                </Body>
-              </CardItem>
-            </Card>
-          )}
+          {product.newProductsData.length > 0 && product.newProductsData.map(item => {
+            return (
+              <Card style={styles.card} key={item.id}>
+                <CardItem cardBody>
+                  <Image source={{ uri: `${API_URL}${item.img_thumbnail}` }} style={styles.image} />
+                </CardItem>
+                <CardItem>
+                  <Body>
+                    <TouchableOpacity onPress={getItemDetail}>
+                      <Text numberOfLines={2} ellipsizeMode="tail" style={styles.product}>{item.name}</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.price}>Rp{item.price.toString().replace(/(.)(?=(\d{3})+$)/g, '$1.')}</Text>
+                    <Text style={styles.subtitle}>{item.store_name}</Text>
+                    <View style={styles.rating}>
+                      {item.rating === 0 && Array(5).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
+                      {item.rating > 0 && item.rating < 2 && Array(1).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
+                      {item.rating > 0 && item.rating < 2 && Array(4).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
+                      {item.rating >= 2 && item.rating < 3 && Array(2).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
+                      {item.rating >= 2 && item.rating < 3 && Array(3).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
+                      {item.rating >= 3 && item.rating < 4 && Array(3).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
+                      {item.rating >= 3 && item.rating < 4 && Array(2).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
+                      {item.rating >= 4 && item.rating < 5 && Array(4).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
+                      {item.rating >= 4 && item.rating < 5 && Array(1).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
+                      {item.rating === 5 && Array(5).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
+                      <Text style={styles.subtitle}>{' '}({item.count_review})</Text>
+                    </View>
+                  </Body>
+                </CardItem>
+              </Card>
+            );
+          })}
         </ScrollView>
 
         {/* Popular Product Section */}
@@ -80,30 +100,37 @@ export default function Home({ navigation }) {
           </TouchableOpacity>
         </View>
         <ScrollView horizontal>
-          {Array(5).fill(
-            <Card style={styles.card}>
-              <CardItem cardBody>
-                <Image source={Product} style={styles.image} />
-              </CardItem>
-              <CardItem>
-                <Body>
-                  <TouchableOpacity onPress={getItemDetail}>
-                    <Text numberOfLines={2} ellipsizeMode="tail" style={styles.product}>Zalora Muslim Man</Text>
-                  </TouchableOpacity>
-                  <Text style={styles.price}>Rp149.000</Text>
-                  <Text style={styles.subtitle}>Zalora Cloth</Text>
-                  <View style={styles.rating}>
-                    <Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />
-                    <Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />
-                    <Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />
-                    <Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />
-                    <Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />
-                    <Text style={styles.subtitle}>{' '}(13)</Text>
-                  </View>
-                </Body>
-              </CardItem>
-            </Card>
-          )}
+          {product.popularProductsData.length > 0 && product.popularProductsData.map(item => {
+            return (
+              <Card style={styles.card} key={item.id}>
+                <CardItem cardBody>
+                  <Image source={{ uri: `${API_URL}${item.img_thumbnail}` }} style={styles.image} />
+                </CardItem>
+                <CardItem>
+                  <Body>
+                    <TouchableOpacity onPress={getItemDetail}>
+                      <Text numberOfLines={2} ellipsizeMode="tail" style={styles.product}>{item.name}</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.price}>Rp{item.price.toString().replace(/(.)(?=(\d{3})+$)/g, '$1.')}</Text>
+                    <Text style={styles.subtitle}>{item.store_name}</Text>
+                    <View style={styles.rating}>
+                      {item.rating === 0 && Array(5).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
+                      {item.rating > 0 && item.rating < 2 && Array(1).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
+                      {item.rating > 0 && item.rating < 2 && Array(4).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
+                      {item.rating >= 2 && item.rating < 3 && Array(2).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
+                      {item.rating >= 2 && item.rating < 3 && Array(3).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
+                      {item.rating >= 3 && item.rating < 4 && Array(3).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
+                      {item.rating >= 3 && item.rating < 4 && Array(2).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
+                      {item.rating >= 4 && item.rating < 5 && Array(4).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
+                      {item.rating >= 4 && item.rating < 5 && Array(1).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
+                      {item.rating === 5 && Array(5).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
+                      <Text style={styles.subtitle}>{' '}({item.count_review})</Text>
+                    </View>
+                  </Body>
+                </CardItem>
+              </Card>
+            );
+          })}
         </ScrollView>
       </Content>
     </Container>
@@ -156,5 +183,9 @@ const styles = StyleSheet.create({
   ratingIcon: {
     fontSize: 16,
     color: 'orange',
+  },
+  ratingIconInactive: {
+    fontSize: 16,
+    color: 'gray',
   },
 });
