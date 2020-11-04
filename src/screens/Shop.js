@@ -9,6 +9,7 @@ import {
   Card,
   CardItem,
   Body,
+  Spinner,
 } from 'native-base';
 import { useDispatch, useSelector } from 'react-redux';
 import { API_URL } from '@env';
@@ -46,6 +47,7 @@ export default function Shop({ navigation }) {
         <Text style={styles.header}>Choose category</Text>
 
         {/* Category card section */}
+        {category.categoryIsLoading && <Spinner color="green" />}
         {category.categoryData.length > 0 && category.categoryData.map(item => {
           return (
             <Card style={styles.card} key={item.id}>
