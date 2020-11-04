@@ -14,4 +14,7 @@ export default {
     type: 'GET_DETAIL_PRODUCT',
     payload: http().get(`/public/item/${id}`),
   }),
+  resetDetailProduct: () => ({
+    type: 'RESET_DETAIL_PRODUCT',
+  }),
 };

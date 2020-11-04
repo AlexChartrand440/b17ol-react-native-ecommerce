@@ -84,6 +84,12 @@ export default (state = initialState, action) => {
         detailProductData: action.payload.data.data,
       };
     }
+    case 'RESET_DETAIL_PRODUCT': {
+      return {
+        ...state,
+        detailProductData: [],
+      };
+    }
     default: {
       return state;
     }

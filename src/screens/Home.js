@@ -36,6 +36,7 @@ export default function Home({ navigation }) {
   }
 
   function getItemDetail(id, category_id, category) {
+    dispatch(productAction.resetDetailProduct());
     navigation.navigate('Item Detail', {
       id,
       category_id,
