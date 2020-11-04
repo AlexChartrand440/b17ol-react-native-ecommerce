@@ -15,6 +15,7 @@ import {
   CardItem,
   Body,
   Icon,
+  Spinner
 } from 'native-base';
 import { useDispatch, useSelector } from 'react-redux';
 import { API_URL } from '@env';
@@ -57,6 +58,7 @@ export default function Home({ navigation }) {
             <Text style={styles.subtitle}>View all</Text>
           </TouchableOpacity>
         </View>
+        {product.newProductsIsLoading && <Spinner color="green" />}
         <ScrollView horizontal>
           {product.newProductsData.length > 0 && product.newProductsData.map(item => {
             return (
@@ -101,6 +103,7 @@ export default function Home({ navigation }) {
             <Text style={styles.subtitle}>View all</Text>
           </TouchableOpacity>
         </View>
+        {product.popularProductsIsLoading && <Spinner color="green" />}
         <ScrollView horizontal>
           {product.popularProductsData.length > 0 && product.popularProductsData.map(item => {
             return (
