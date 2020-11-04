@@ -16,6 +16,7 @@ import {
   Card,
   CardItem,
   Body,
+  Spinner,
 } from 'native-base';
 import { useDispatch, useSelector } from 'react-redux';
 import { API_URL } from '@env';
@@ -43,6 +44,8 @@ export default function Detail({ route, navigation }) {
   return (
     <Container style={styles.parent}>
       <Content padder>
+        {product.detailProductIsLoading && <Spinner color="green" />}
+
         {(product.detailProductData.length > 0 && !product.detailProductIsLoading) && product.detailProductData.map(item => {
           return (
             <View>
