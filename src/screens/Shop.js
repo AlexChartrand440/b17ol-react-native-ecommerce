@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
-import React from 'react';
-import {StyleSheet, Image, TouchableOpacity} from 'react-native';
+import React, { useEffect } from 'react';
+import { StyleSheet, Image, TouchableOpacity } from 'react-native';
 import {
   Container,
   Content,
@@ -10,11 +10,20 @@ import {
   CardItem,
   Body,
 } from 'native-base';
+import { useDispatch, useSelector } from 'react-redux';
+import { API_URL } from '@env';
 
-// import dummy category image
-import Category from '../assets/img/hp.png';
+// import actions
+import categoryAction from '../redux/actions/category';
 
-export default function Shop({navigation}) {
+export default function Shop({ navigation }) {
+  const dispatch = useDispatch();
+  const category = useSelector(state => state.category);
+
+  useEffect(() => {
+    dispatch(categoryAction.getCategory());
+  }, []);
+
   function getProductByCategory() {
     navigation.navigate('Item');
   }
@@ -33,20 +42,22 @@ export default function Shop({navigation}) {
         <Text style={styles.header}>Choose category</Text>
 
         {/* Category card section */}
-        {Array(5).fill(
-          <Card style={styles.card}>
-            <CardItem style={styles.cardItem}>
-              <Body>
-                <TouchableOpacity onPress={getProductByCategory}>
-                  <Text style={styles.categoryText}>Smartphone</Text>
-                </TouchableOpacity>
-              </Body>
-            </CardItem>
-            <CardItem cardBody style={styles.cardItem}>
-              <Image source={Category} style={styles.image} />
-            </CardItem>
-          </Card>
-        )}
+        {category.categoryData.length > 0 && category.categoryData.map(item => {
+          return (
+            <Card style={styles.card} key={item.id}>
+              <CardItem style={styles.cardItem}>
+                <Body>
+                  <TouchableOpacity onPress={getProductByCategory}>
+                    <Text style={styles.categoryText}>{item.name}</Text>
+                  </TouchableOpacity>
+                </Body>
+              </CardItem>
+              <CardItem cardBody style={styles.cardItem}>
+                <Image source={{ uri: `${API_URL}${item.img_url}` }} style={styles.image} />
+              </CardItem>
+            </Card>
+          );
+        })}
       </Content>
     </Container>
   );

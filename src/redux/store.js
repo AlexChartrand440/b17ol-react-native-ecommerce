@@ -12,9 +12,10 @@ const persistConfig = {
   whitelist: [
     'auth',
   ],
-  blacklist: [
-    'product',
-  ],
+  // blacklist: [
+  //   'product',
+  //   'category',
+  // ],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

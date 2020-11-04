@@ -22,9 +22,6 @@ import { API_URL } from '@env';
 // import actions
 import productAction from '../redux/actions/product';
 
-// import dummy product image
-import Product from '../assets/img/item1.png';
-
 export default function Home({ navigation }) {
   const dispatch = useDispatch();
   const product = useSelector(state => state.product);
