@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import {
   Container,
@@ -11,17 +11,23 @@ import {
   Left,
   Right,
   Icon,
+  Spinner,
 } from 'native-base';
-import { useDispatch } from 'react-redux';
-
-// import default avatar
-import User from '../assets/img/avatar.png';
+import { useDispatch, useSelector } from 'react-redux';
+import { API_URL } from '@env';
 
 // import actions
 import authAction from '../redux/actions/auth';
+import profileAction from '../redux/actions/profile';
 
 export default function Profile({ navigation }) {
   const dispatch = useDispatch();
+  const auth = useSelector(state => state.auth);
+  const profile = useSelector(state => state.profile);
+
+  useEffect(() => {
+    dispatch(profileAction.getProfile(auth.token));
+  }, [auth.token, dispatch]);
 
   function getShippingAddress() {
     navigation.navigate('Shipping Address');
@@ -41,13 +47,18 @@ export default function Profile({ navigation }) {
         <Text style={styles.header}>
           My Profile
         </Text>
-        <View style={styles.avatar}>
-          <Thumbnail source={User} />
-          <View style={styles.personalInfo}>
-            <Text style={styles.fullname}>Matilda Brown</Text>
-            <Text style={styles.email}>matildabrown@mail.com</Text>
-          </View>
-        </View>
+        {profile.profileIsLoading && <Spinner color="green" />}
+        {(profile.profileData && !profile.profileIsError) && profile.profileData.map(user => {
+          return (
+            <View style={styles.avatar} key={user.id}>
+              <Thumbnail source={{ uri: `${API_URL}${user.photo_profile}` }} />
+              <View style={styles.personalInfo}>
+                <Text style={styles.fullname}>{user.name}</Text>
+                <Text style={styles.email}>{user.email}</Text>
+              </View>
+            </View>
+          );
+        })}
         <List>
           <ListItem>
             <Left>
