@@ -14,15 +14,23 @@ import {
   CardItem,
   Body,
   Icon,
+  Spinner,
 } from 'native-base';
+import { useDispatch, useSelector } from 'react-redux';
+import { API_URL } from '@env';
 
-// import dummy product image
-import Product from '../assets/img/item1.png';
+// import actions
+import productAction from '../redux/actions/product';
 
-export default function Item({ navigation }) {
+export default function Item({ route, navigation }) {
+  const { id, title } = route.params;
+  const dispatch = useDispatch();
+  const product = useSelector(state => state.product);
+
   useEffect(() => {
-    navigation.setOptions({ title: 'All Items' });
-  }, [navigation]);
+    navigation.setOptions({ title: title });
+    dispatch(productAction.getProductByCategory(id));
+  }, [dispatch, id, navigation, title]);
 
   function getItemDetail() {
     navigation.navigate('Item Detail');
@@ -45,32 +53,41 @@ export default function Item({ navigation }) {
         </TouchableOpacity>
       </View>
       <Content padder>
+        {product.productByCategoryIsLoading && <Spinner color="green" />}
         {/* Product list section */}
         <View style={styles.productList}>
-          {Array(10).fill(
-            <Card style={styles.card}>
-              <CardItem cardBody>
-                <Image source={Product} style={styles.image} />
-              </CardItem>
-              <CardItem>
-                <Body>
-                  <TouchableOpacity onPress={getItemDetail}>
-                    <Text numberOfLines={2} ellipsizeMode="tail" style={styles.product}>Zalora Muslim Man</Text>
-                  </TouchableOpacity>
-                  <Text style={styles.price}>Rp149.000</Text>
-                  <Text style={styles.subtitle}>Zalora Cloth</Text>
-                  <View style={styles.rating}>
-                    <Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />
-                    <Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />
-                    <Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />
-                    <Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />
-                    <Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />
-                    <Text style={styles.subtitle}>{' '}(13)</Text>
-                  </View>
-                </Body>
-              </CardItem>
-            </Card>
-          )}
+          {(product.productByCategoryData.length > 0 && !product.productByCategoryIsLoading) && product.productByCategoryData.map(item => {
+            return (
+              <Card style={styles.card}>
+                <CardItem cardBody>
+                  <Image source={{ uri: `${API_URL}${item.img_thumbnail}` }} style={styles.image} />
+                </CardItem>
+                <CardItem>
+                  <Body>
+                    <TouchableOpacity onPress={getItemDetail}>
+                      <Text numberOfLines={2} ellipsizeMode="tail" style={styles.product}>{item.name}</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.price}>Rp{item.price.toString().replace(/(.)(?=(\d{3})+$)/g, '$1.')}</Text>
+                    <Text style={styles.subtitle}>{item.store_name}</Text>
+                    <View style={styles.rating}>
+                      {item.rating === 0 && Array(5).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
+                      {item.rating > 0 && item.rating < 2 && Array(1).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
+                      {item.rating > 0 && item.rating < 2 && Array(4).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
+                      {item.rating >= 2 && item.rating < 3 && Array(2).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
+                      {item.rating >= 2 && item.rating < 3 && Array(3).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
+                      {item.rating >= 3 && item.rating < 4 && Array(3).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
+                      {item.rating >= 3 && item.rating < 4 && Array(2).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
+                      {item.rating >= 4 && item.rating < 5 && Array(4).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
+                      {item.rating >= 4 && item.rating < 5 && Array(1).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
+                      {item.rating === 5 && Array(5).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
+                      <Text style={styles.subtitle}>{' '}({item.count_review})</Text>
+                    </View>
+                  </Body>
+                </CardItem>
+              </Card>
+            );
+          })}
+          {(product.productByCategoryData.length === 0 && product.productByCategoryIsError) && <Text>No item!</Text>}
         </View>
       </Content>
     </Container>
@@ -84,7 +101,7 @@ const styles = StyleSheet.create({
   productList: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     width: '100%',
   },
   card: {
@@ -119,6 +136,10 @@ const styles = StyleSheet.create({
   ratingIcon: {
     fontSize: 16,
     color: 'orange',
+  },
+  ratingIconInactive: {
+    fontSize: 16,
+    color: 'gray',
   },
   advFunc: {
     flexDirection: 'row',

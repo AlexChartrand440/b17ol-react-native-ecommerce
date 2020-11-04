@@ -21,4 +21,11 @@ export default {
     type: 'GET_RELEVANT_PRODUCTS',
     payload: http().get(`/public/item?limit=10&search[category_id]=${id}&sort[rating]=desc`),
   }),
+  getProductByCategory: (id) => ({
+    type: 'GET_PRODUCT_BY_CATEGORY',
+    payload: http().get(`/public/category/${id}`),
+  }),
+  resetCategory: () => ({
+    type: 'RESET_CATEGORY',
+  }),
 };

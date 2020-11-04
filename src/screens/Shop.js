@@ -15,6 +15,7 @@ import { API_URL } from '@env';
 
 // import actions
 import categoryAction from '../redux/actions/category';
+import productAction from '../redux/actions/product';
 
 export default function Shop({ navigation }) {
   const dispatch = useDispatch();
@@ -22,10 +23,14 @@ export default function Shop({ navigation }) {
 
   useEffect(() => {
     dispatch(categoryAction.getCategory());
-  }, []);
+  }, [dispatch]);
 
-  function getProductByCategory() {
-    navigation.navigate('Item');
+  function getProductByCategory(id, title) {
+    dispatch(productAction.resetCategory());
+    navigation.navigate('Item', {
+      id,
+      title,
+    });
   }
 
   return (
@@ -47,7 +52,7 @@ export default function Shop({ navigation }) {
             <Card style={styles.card} key={item.id}>
               <CardItem style={styles.cardItem}>
                 <Body>
-                  <TouchableOpacity onPress={getProductByCategory}>
+                  <TouchableOpacity onPress={() => getProductByCategory(item.id, item.name)}>
                     <Text style={styles.categoryText}>{item.name}</Text>
                   </TouchableOpacity>
                 </Body>

@@ -19,6 +19,11 @@ const initialState = {
   relevantProductsIsLoading: false,
   relevantProductsIsError: false,
   relevantProductsAlertMsg: '',
+
+  productByCategoryData: [],
+  productByCategoryIsLoading: false,
+  productByCategoryIsError: false,
+  productByCategoryAlertMsg: '',
 };
 
 export default (state = initialState, action) => {
@@ -117,6 +122,36 @@ export default (state = initialState, action) => {
         relevantProductsIsLoading: false,
         relevantProductsIsError: false,
         relevantProductsData: action.payload.data.data,
+      };
+    }
+    case 'GET_PRODUCT_BY_CATEGORY_PENDING': {
+      return {
+        ...state,
+        productByCategoryIsLoading: true,
+      };
+    }
+    case 'GET_PRODUCT_BY_CATEGORY_REJECTED': {
+      return {
+        ...state,
+        productByCategoryIsLoading: false,
+        productByCategoryIsError: true,
+        productByCategoryAlertMsg: action.payload.response.data.message,
+      };
+    }
+    case 'GET_PRODUCT_BY_CATEGORY_FULFILLED': {
+      return {
+        ...state,
+        productByCategoryIsLoading: false,
+        productByCategoryIsError: false,
+        productByCategoryData: action.payload.data.data.items,
+      };
+    }
+    case 'RESET_CATEGORY': {
+      return {
+        ...state,
+        productByCategoryIsLoading: true,
+        productByCategoryIsError: false,
+        productByCategoryData: [],
       };
     }
     default: {
