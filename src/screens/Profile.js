@@ -16,6 +16,9 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { API_URL } from '@env';
 
+// import default avatar
+import User from '../assets/img/avatar.png';
+
 // import actions
 import authAction from '../redux/actions/auth';
 import profileAction from '../redux/actions/profile';
@@ -51,7 +54,7 @@ export default function Profile({ navigation }) {
         {(profile.profileData && !profile.profileIsError) && profile.profileData.map(user => {
           return (
             <View style={styles.avatar} key={user.id}>
-              <Thumbnail source={{ uri: `${API_URL}${user.photo_profile}` }} />
+              <Thumbnail source={user.photo_profile === '' ? User : { uri: `${API_URL}${user.photo_profile}` }} />
               <View style={styles.personalInfo}>
                 <Text style={styles.fullname}>{user.name}</Text>
                 <Text style={styles.email}>{user.email}</Text>
