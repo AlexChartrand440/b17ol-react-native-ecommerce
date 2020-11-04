@@ -15,7 +15,7 @@ import {
   CardItem,
   Body,
   Icon,
-  Spinner
+  Spinner,
 } from 'native-base';
 import { useDispatch, useSelector } from 'react-redux';
 import { API_URL } from '@env';

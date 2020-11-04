@@ -17,4 +17,8 @@ export default {
   resetDetailProduct: () => ({
     type: 'RESET_DETAIL_PRODUCT',
   }),
+  getRelevantProducts: (id) => ({
+    type: 'GET_RELEVANT_PRODUCTS',
+    payload: http().get(`/public/item?limit=10&search[category_id]=${id}&sort[rating]=desc`),
+  }),
 };

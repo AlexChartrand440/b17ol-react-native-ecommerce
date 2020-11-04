@@ -24,9 +24,6 @@ import { API_URL } from '@env';
 // import actions
 import productAction from '../redux/actions/product';
 
-// import dummy product image
-import Product from '../assets/img/item1.png';
-
 export default function Detail({ route, navigation }) {
   const { id, category_id, category } = route.params;
   const dispatch = useDispatch();
@@ -35,7 +32,8 @@ export default function Detail({ route, navigation }) {
   useEffect(() => {
     navigation.setOptions({ title: category });
     dispatch(productAction.getDetailProduct(id));
-  }, [category, dispatch, id, navigation]);
+    dispatch(productAction.getRelevantProducts(category_id));
+  }, [category, category_id, dispatch, id, navigation]);
 
   function getItemDetail() {
     navigation.navigate('Item Detail');
@@ -53,7 +51,7 @@ export default function Detail({ route, navigation }) {
               <ScrollView horizontal>
                 {item.images.split(',').map((img, i) => {
                   return (
-                    <Image source={{ uri: `${API_URL}${img}` }} style={styles.image} />
+                    <Image source={{ uri: `${API_URL}${img}` }} style={styles.image} key={i} />
                   );
                 })}
               </ScrollView>
@@ -87,32 +85,39 @@ export default function Detail({ route, navigation }) {
         })}
 
         {/* Relevant item */}
-        <Text style={styles.relevantItem}>You can also like this</Text>
+        {product.relevantProductsIsLoading ? <Spinner color="green" /> : <Text style={styles.relevantItem}>You can also like this</Text>}
         <ScrollView horizontal>
-          {Array(5).fill(
-            <Card style={styles.card}>
-              <CardItem cardBody>
-                <Image source={Product} style={styles.relevantImage} />
-              </CardItem>
-              <CardItem>
-                <Body>
-                  <TouchableOpacity onPress={getItemDetail}>
-                    <Text numberOfLines={2} ellipsizeMode="tail" style={styles.product}>Zalora Muslim Man</Text>
-                  </TouchableOpacity>
-                  <Text style={[styles.price, styles.description, styles.bold]}>Rp149.000</Text>
-                  <Text style={styles.subtitle}>Zalora Cloth</Text>
-                  <View style={styles.rating}>
-                    <Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />
-                    <Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />
-                    <Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />
-                    <Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />
-                    <Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />
-                    <Text style={styles.subtitle}>{' '}(13)</Text>
-                  </View>
-                </Body>
-              </CardItem>
-            </Card>
-          )}
+          {(product.relevantProductsData.length > 0 && !product.relevantProductsIsLoading) && product.relevantProductsData.map(item => {
+            return (
+              <Card style={styles.card} key={item.id}>
+                <CardItem cardBody>
+                  <Image source={{ uri: `${API_URL}${item.img_thumbnail}` }} style={styles.relevantImage} />
+                </CardItem>
+                <CardItem>
+                  <Body>
+                    <TouchableOpacity onPress={getItemDetail}>
+                      <Text numberOfLines={2} ellipsizeMode="tail" style={styles.product}>{item.name}</Text>
+                    </TouchableOpacity>
+                    <Text style={[styles.price, styles.description, styles.bold]}>Rp{item.price.toString().replace(/(.)(?=(\d{3})+$)/g, '$1.')}</Text>
+                    <Text style={styles.subtitle}>{item.store_name}</Text>
+                    <View style={styles.rating}>
+                      {item.rating === 0 && Array(5).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
+                      {item.rating > 0 && item.rating < 2 && Array(1).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
+                      {item.rating > 0 && item.rating < 2 && Array(4).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
+                      {item.rating >= 2 && item.rating < 3 && Array(2).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
+                      {item.rating >= 2 && item.rating < 3 && Array(3).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
+                      {item.rating >= 3 && item.rating < 4 && Array(3).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
+                      {item.rating >= 3 && item.rating < 4 && Array(2).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
+                      {item.rating >= 4 && item.rating < 5 && Array(4).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
+                      {item.rating >= 4 && item.rating < 5 && Array(1).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
+                      {item.rating === 5 && Array(5).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
+                      <Text style={styles.subtitle}>{' '}({item.count_review})</Text>
+                    </View>
+                  </Body>
+                </CardItem>
+              </Card>
+            );
+          })}
         </ScrollView>
       </Content>
       <View style={styles.floatingBar}>

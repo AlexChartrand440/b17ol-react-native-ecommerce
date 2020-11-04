@@ -14,6 +14,11 @@ const initialState = {
   detailProductIsLoading: false,
   detailProductIsError: false,
   detailProductAlertMsg: '',
+
+  relevantProductsData: [],
+  relevantProductsIsLoading: false,
+  relevantProductsIsError: false,
+  relevantProductsAlertMsg: '',
 };
 
 export default (state = initialState, action) => {
@@ -88,6 +93,30 @@ export default (state = initialState, action) => {
       return {
         ...state,
         detailProductData: [],
+        relevantProductsData: [],
+        relevantProductsIsLoading: true,
+      };
+    }
+    case 'GET_RELEVANT_PRODUCTS_PENDING': {
+      return {
+        ...state,
+        relevantProductsIsLoading: true,
+      };
+    }
+    case 'GET_RELEVANT_PRODUCTS_REJECTED': {
+      return {
+        ...state,
+        relevantProductsIsLoading: false,
+        relevantProductsIsError: true,
+        relevantProductsAlertMsg: action.payload.response.data.message,
+      };
+    }
+    case 'GET_RELEVANT_PRODUCTS_FULFILLED': {
+      return {
+        ...state,
+        relevantProductsIsLoading: false,
+        relevantProductsIsError: false,
+        relevantProductsData: action.payload.data.data,
       };
     }
     default: {
