@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import {
   Container,
@@ -10,12 +10,23 @@ import {
   Body,
   Icon,
   Button,
+  Spinner,
 } from 'native-base';
+import { useDispatch, useSelector } from 'react-redux';
+import { API_URL } from '@env';
 
-// import dummy product image
-import Product from '../assets/img/item1.png';
+// import actions
+import cartAction from '../redux/actions/cart';
 
 export default function Bag({ navigation }) {
+  const dispatch = useDispatch();
+  const auth = useSelector(state => state.auth);
+  const cart = useSelector(state => state.cart);
+
+  useEffect(() => {
+    dispatch(cartAction.getCustomerCart(auth.token));
+  }, [auth.token, dispatch]);
+
   function checkout() {
     navigation.navigate('Checkout');
   }
@@ -24,71 +35,76 @@ export default function Bag({ navigation }) {
     <Container style={styles.parent}>
       <Content padder>
         <Text style={styles.header}>My Bag</Text>
-        {Array(7).fill(
-          <Card style={styles.card}>
-            <CardItem cardBody style={styles.cardImage}>
-              <Image source={Product} style={styles.image} />
-            </CardItem>
-            <CardItem style={styles.cardContent}>
-              <Body>
-                <View style={[styles.cardHeader, styles.contentMargin]}>
-                  <View>
-                    <Text style={styles.cardTitle}>Zalora Muslim Man</Text>
-                    <Text style={styles.cardSubtitle}>Zalora Cloth</Text>
+        {cart.cartIsLoading && <Spinner color="green" />}
+        {(cart.cartData && !cart.cartIsLoading) ? cart.cartData.map(item => {
+          return (
+            <Card style={styles.card} key={item.item_id}>
+              <CardItem cardBody style={styles.cardImage}>
+                <Image source={{ uri: `${API_URL}${item.img_thumbnail}` }} style={styles.image} />
+              </CardItem>
+              <CardItem style={styles.cardContent}>
+                <Body>
+                  <View style={[styles.cardHeader, styles.contentMargin]}>
+                    <View>
+                      <Text numberOfLines={2} ellipsizeMode="tail" style={styles.cardTitle}>{item.name}</Text>
+                      <Text style={styles.cardSubtitle}>{item.store_name}</Text>
+                    </View>
+                    <View>
+                      <TouchableOpacity>
+                        <Icon
+                          type="MaterialIcons"
+                          name="delete"
+                          style={styles.delete}
+                        />
+                      </TouchableOpacity>
+                    </View>
                   </View>
-                  <View>
-                    <TouchableOpacity>
-                      <Icon
-                        type="MaterialIcons"
-                        name="delete"
-                        style={styles.delete}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                <View style={styles.cardHeader}>
-                  <View style={styles.card}>
-                    <TouchableOpacity style={styles.counterButton}>
-                      <Icon
-                        type="MaterialIcons"
-                        name="remove"
-                        style={styles.counterIcon}
-                      />
-                    </TouchableOpacity>
-                    <Text style={styles.counterText}>
-                      {'  '}1{'  '}
+                  <View style={styles.cardHeader}>
+                    <View style={styles.card}>
+                      <TouchableOpacity style={styles.counterButton} disabled={item.quantity === 1 ? true : false}>
+                        <Icon
+                          type="MaterialIcons"
+                          name="remove"
+                          style={styles.counterIcon}
+                        />
+                      </TouchableOpacity>
+                      <Text style={styles.counterText}>
+                        {'  '}{item.quantity}{'  '}
+                      </Text>
+                      <TouchableOpacity style={styles.counterButton}>
+                        <Icon
+                          type="MaterialIcons"
+                          name="add"
+                          style={styles.counterIcon}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                    <Text style={[styles.counterText, styles.priceText]}>
+                      Rp{item.price.toString().replace(/(.)(?=(\d{3})+$)/g, '$1.')}
                     </Text>
-                    <TouchableOpacity style={styles.counterButton}>
-                      <Icon
-                        type="MaterialIcons"
-                        name="add"
-                        style={styles.counterIcon}
-                      />
-                    </TouchableOpacity>
                   </View>
-                  <Text style={[styles.counterText, styles.priceText]}>
-                    Rp149.000
-                  </Text>
-                </View>
-              </Body>
-            </CardItem>
-          </Card>,
-        )}
+                </Body>
+              </CardItem>
+            </Card>
+          );
+        }) : <Text>No Item!</Text>}
       </Content>
-      <View style={styles.floatingBar}>
-        <View style={styles.cardHeader}>
-          <Text style={styles.counterText}>Total amount</Text>
-          <Text style={styles.totalPrice}>Rp949.000</Text>
+      {(cart.cartData && !cart.cartIsLoading) && (
+        <View style={styles.floatingBar}>
+          <View style={styles.cardHeader}>
+            <Text style={styles.counterText}>Total amount</Text>
+            <Text style={styles.totalPrice}>Rp{cart.cartSummary.toString().replace(/(.)(?=(\d{3})+$)/g, '$1.')}</Text>
+          </View>
+          <Button
+            rounded
+            block
+            success
+            style={styles.floatingButton}
+            onPress={checkout}>
+            <Text>Checkout</Text>
+          </Button>
         </View>
-        <Button
-          rounded
-          block
-          success
-          style={styles.floatingButton}
-          onPress={checkout}>
-          <Text>Checkout</Text>
-        </Button>
-      </View>
+      )}
     </Container>
   );
 }
@@ -131,6 +147,7 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 16,
     fontWeight: 'bold',
+    width: 150,
   },
   cardSubtitle: {
     fontSize: 12,
