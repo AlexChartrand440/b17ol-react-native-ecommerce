@@ -54,8 +54,6 @@ export default function Signup({navigation}) {
             handleBlur,
             handleSubmit,
             values,
-            isValid,
-            isSubmitting,
             touched,
             errors,
           }) => (
