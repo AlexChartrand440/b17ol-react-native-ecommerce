@@ -1,6 +1,5 @@
-/* eslint-disable prettier/prettier */
-import React, { useEffect } from 'react';
-import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
+import React, {useEffect} from 'react';
+import {StyleSheet, View, Image, TouchableOpacity} from 'react-native';
 import {
   Container,
   Content,
@@ -12,23 +11,34 @@ import {
   Button,
   Spinner,
 } from 'native-base';
-import { useDispatch, useSelector } from 'react-redux';
-import { API_URL } from '@env';
+import {useDispatch, useSelector} from 'react-redux';
+import {API_URL} from '@env';
 
 // import actions
 import cartAction from '../redux/actions/cart';
 
-export default function Bag({ navigation }) {
+export default function Bag({navigation}) {
   const dispatch = useDispatch();
-  const auth = useSelector(state => state.auth);
-  const cart = useSelector(state => state.cart);
+  const auth = useSelector((state) => state.auth);
+  const cart = useSelector((state) => state.cart);
 
   useEffect(() => {
     dispatch(cartAction.getCustomerCart(auth.token));
   }, [auth.token, dispatch]);
 
+  useEffect(() => {
+    if (cart.isDelete) {
+      dispatch(cartAction.resetDelete());
+      dispatch(cartAction.getCustomerCart(auth.token));
+    }
+  });
+
   function checkout() {
     navigation.navigate('Checkout');
+  }
+
+  function deleteItem(item_id) {
+    dispatch(cartAction.deleteCart(item_id, auth.token));
   }
 
   return (
@@ -36,64 +46,89 @@ export default function Bag({ navigation }) {
       <Content padder>
         <Text style={styles.header}>My Bag</Text>
         {cart.cartIsLoading && <Spinner color="green" />}
-        {(cart.cartData && !cart.cartIsLoading) ? cart.cartData.map(item => {
-          return (
-            <Card style={styles.card} key={item.item_id}>
-              <CardItem cardBody style={styles.cardImage}>
-                <Image source={{ uri: `${API_URL}${item.img_thumbnail}` }} style={styles.image} />
-              </CardItem>
-              <CardItem style={styles.cardContent}>
-                <Body>
-                  <View style={[styles.cardHeader, styles.contentMargin]}>
-                    <View>
-                      <Text numberOfLines={2} ellipsizeMode="tail" style={styles.cardTitle}>{item.name}</Text>
-                      <Text style={styles.cardSubtitle}>{item.store_name}</Text>
+        {cart.cartData && !cart.cartIsLoading ? (
+          cart.cartData.map((item) => {
+            return (
+              <Card style={styles.card} key={item.item_id}>
+                <CardItem cardBody style={styles.cardImage}>
+                  <Image
+                    source={{uri: `${API_URL}${item.img_thumbnail}`}}
+                    style={styles.image}
+                  />
+                </CardItem>
+                <CardItem style={styles.cardContent}>
+                  <Body>
+                    <View style={[styles.cardHeader, styles.contentMargin]}>
+                      <View>
+                        <Text
+                          numberOfLines={2}
+                          ellipsizeMode="tail"
+                          style={styles.cardTitle}>
+                          {item.name}
+                        </Text>
+                        <Text style={styles.cardSubtitle}>
+                          {item.store_name}
+                        </Text>
+                      </View>
+                      <View>
+                        <TouchableOpacity
+                          onPress={() => deleteItem(item.item_id)}>
+                          <Icon
+                            type="MaterialIcons"
+                            name="delete"
+                            style={styles.delete}
+                          />
+                        </TouchableOpacity>
+                      </View>
                     </View>
-                    <View>
-                      <TouchableOpacity>
-                        <Icon
-                          type="MaterialIcons"
-                          name="delete"
-                          style={styles.delete}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                  <View style={styles.cardHeader}>
-                    <View style={styles.card}>
-                      <TouchableOpacity style={styles.counterButton} disabled={item.quantity === 1 ? true : false}>
-                        <Icon
-                          type="MaterialIcons"
-                          name="remove"
-                          style={styles.counterIcon}
-                        />
-                      </TouchableOpacity>
-                      <Text style={styles.counterText}>
-                        {'  '}{item.quantity}{'  '}
+                    <View style={styles.cardHeader}>
+                      <View style={styles.card}>
+                        <TouchableOpacity
+                          style={styles.counterButton}
+                          disabled={item.quantity === 1 ? true : false}>
+                          <Icon
+                            type="MaterialIcons"
+                            name="remove"
+                            style={styles.counterIcon}
+                          />
+                        </TouchableOpacity>
+                        <Text style={styles.counterText}>
+                          {'  '}
+                          {item.quantity}
+                          {'  '}
+                        </Text>
+                        <TouchableOpacity style={styles.counterButton}>
+                          <Icon
+                            type="MaterialIcons"
+                            name="add"
+                            style={styles.counterIcon}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                      <Text style={[styles.counterText, styles.priceText]}>
+                        Rp
+                        {item.price
+                          .toString()
+                          .replace(/(.)(?=(\d{3})+$)/g, '$1.')}
                       </Text>
-                      <TouchableOpacity style={styles.counterButton}>
-                        <Icon
-                          type="MaterialIcons"
-                          name="add"
-                          style={styles.counterIcon}
-                        />
-                      </TouchableOpacity>
                     </View>
-                    <Text style={[styles.counterText, styles.priceText]}>
-                      Rp{item.price.toString().replace(/(.)(?=(\d{3})+$)/g, '$1.')}
-                    </Text>
-                  </View>
-                </Body>
-              </CardItem>
-            </Card>
-          );
-        }) : <Text>No Item!</Text>}
+                  </Body>
+                </CardItem>
+              </Card>
+            );
+          })
+        ) : (
+          <Text>No Item!</Text>
+        )}
       </Content>
-      {(cart.cartData && !cart.cartIsLoading) && (
+      {cart.cartData && !cart.cartIsLoading && (
         <View style={styles.floatingBar}>
           <View style={styles.cardHeader}>
             <Text style={styles.counterText}>Total amount</Text>
-            <Text style={styles.totalPrice}>Rp{cart.cartSummary.toString().replace(/(.)(?=(\d{3})+$)/g, '$1.')}</Text>
+            <Text style={styles.totalPrice}>
+              Rp
+              {cart.cartSummary.toString().replace(/(.)(?=(\d{3})+$)/g, '$1.')}
+            </Text>
           </View>
           <Button
             rounded
