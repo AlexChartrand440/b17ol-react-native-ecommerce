@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {StyleSheet, View, TouchableOpacity} from 'react-native';
+import {Alert, StyleSheet, View, TouchableOpacity} from 'react-native';
 import {
   Container,
   Content,
@@ -20,6 +20,7 @@ import {useSelector} from 'react-redux';
 import {API_URL} from '@env';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
+import ImagePicker from 'react-native-image-picker';
 
 // import default avatar
 import User from '../assets/img/avatar.png';
@@ -41,18 +42,51 @@ export default function UpdateProfile() {
   });
 
   const [birthdate, setBirthdate] = useState(profileData[0].birthday);
+  const [photo, setPhoto] = useState(profileData[0].photo_profile);
+  const [imgData, setImgData] = useState(null);
+
+  function selectImage() {
+    let options = {
+      title: 'Choose your avatar..',
+      maxWidth: 256,
+      maxHeight: 256,
+      mediaType: 'photo',
+      noData: true,
+      storageOptions: {
+        skipBackup: true,
+      },
+    };
+
+    ImagePicker.showImagePicker(options, (response) => {
+      if (response.didCancel) {
+        Alert.alert("You didn't select any image");
+      } else {
+        const source = {
+          uri: response.uri,
+          name: response.fileName,
+          type: response.type,
+        };
+        setImgData(source);
+        setPhoto(source.uri);
+      }
+    });
+  }
 
   return (
     <Container style={styles.parent}>
       <Content padder>
         <View style={styles.uploadImage}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={selectImage}>
             <Thumbnail
               large
               source={
-                profileData[0].photo_profile === ''
+                photo === ''
                   ? User
-                  : {uri: `${API_URL}${profileData[0].photo_profile}`}
+                  : {
+                      uri: photo.includes('upload')
+                        ? `${API_URL}${photo}`
+                        : photo,
+                    }
               }
             />
           </TouchableOpacity>
