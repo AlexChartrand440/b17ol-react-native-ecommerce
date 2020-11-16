@@ -14,6 +14,11 @@ const initialState = {
   updateIsError: false,
   updateAlert: '',
   isUpdate: false,
+
+  addIsLoading: false,
+  addIsError: false,
+  addAlert: '',
+  isAdd: false,
 };
 
 export default (state = initialState, action) => {
@@ -101,6 +106,37 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isUpdate: false,
+      };
+    }
+    case 'ADD_CART_PENDING': {
+      return {
+        ...state,
+        addIsLoading: true,
+        addAlert: 'Add item to cart in progress. Please wait..',
+      };
+    }
+    case 'ADD_CART_REJECTED': {
+      return {
+        ...state,
+        addIsLoading: false,
+        addIsError: true,
+        addAlert: action.payload.response.data.message,
+      };
+    }
+    case 'ADD_CART_FULFILLED': {
+      return {
+        ...state,
+        addIsLoading: false,
+        addIsError: false,
+        isAdd: true,
+        addAlert: 'Successfully add item to cart',
+      };
+    }
+    case 'RESET_ADD': {
+      return {
+        ...state,
+        isAdd: false,
+        addIsError: false,
       };
     }
     default: {

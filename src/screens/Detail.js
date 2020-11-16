@@ -1,11 +1,11 @@
-/* eslint-disable prettier/prettier */
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import {
   StyleSheet,
   View,
   Image,
   ScrollView,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {
   Container,
@@ -18,22 +18,38 @@ import {
   Body,
   Spinner,
 } from 'native-base';
-import { useDispatch, useSelector } from 'react-redux';
-import { API_URL } from '@env';
+import {useDispatch, useSelector} from 'react-redux';
+import {API_URL} from '@env';
 
 // import actions
 import productAction from '../redux/actions/product';
+import cartAction from '../redux/actions/cart';
 
-export default function Detail({ route, navigation }) {
-  const { id, category_id, category } = route.params;
+export default function Detail({route, navigation}) {
+  const {id, category_id, category} = route.params;
   const dispatch = useDispatch();
-  const product = useSelector(state => state.product);
+  const product = useSelector((state) => state.product);
+  const auth = useSelector((state) => state.auth);
+  const cart = useSelector((state) => state.cart);
 
   useEffect(() => {
-    navigation.setOptions({ title: category });
+    navigation.setOptions({title: category});
     dispatch(productAction.getDetailProduct(id));
     dispatch(productAction.getRelevantProducts(category_id));
   }, [category, category_id, dispatch, id, navigation]);
+
+  useEffect(() => {
+    if (cart.isAdd) {
+      Alert.alert('Success add item to my bag');
+      dispatch(cartAction.getCustomerCart(auth.token));
+      dispatch(cartAction.resetAdd());
+    }
+
+    if (cart.addIsError) {
+      Alert.alert('Item already in my bag');
+      dispatch(cartAction.resetAdd());
+    }
+  });
 
   function getItemDetail(_id, _category_id, _category) {
     dispatch(productAction.resetDetailProduct());
@@ -44,89 +60,295 @@ export default function Detail({ route, navigation }) {
     });
   }
 
+  function addToCart() {
+    const data = {
+      itemID: id,
+      quantity: 1,
+    };
+    dispatch(cartAction.addCart(data, auth.token));
+  }
+
   return (
     <Container style={styles.parent}>
       <Content padder>
         {product.detailProductIsLoading && <Spinner color="green" />}
 
-        {(product.detailProductData.length > 0 && !product.detailProductIsLoading) && product.detailProductData.map(item => {
-          return (
-            <View>
-              {/* Item images */}
-              <ScrollView horizontal>
-                {item.images.split(',').map((img, i) => {
-                  return (
-                    <Image source={{ uri: `${API_URL}${img}` }} style={styles.image} key={i} />
-                  );
-                })}
-              </ScrollView>
-              {/* Item information & description */}
-              <View style={styles.itemInfo}>
-                <Text style={[styles.header, styles.price]}>Rp{item.price.toString().replace(/(.)(?=(\d{3})+$)/g, '$1.')}</Text>
-                <Text numberOfLines={2} ellipsizeMode="tail" style={styles.header}>{item.name}</Text>
-                <Text style={styles.subtitle}>{item.store_name}</Text>
-                <View style={styles.rating}>
-                  {item.rating === 0 && Array(5).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
-                  {item.rating > 0 && item.rating < 2 && Array(1).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
-                  {item.rating > 0 && item.rating < 2 && Array(4).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
-                  {item.rating >= 2 && item.rating < 3 && Array(2).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
-                  {item.rating >= 2 && item.rating < 3 && Array(3).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
-                  {item.rating >= 3 && item.rating < 4 && Array(3).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
-                  {item.rating >= 3 && item.rating < 4 && Array(2).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
-                  {item.rating >= 4 && item.rating < 5 && Array(4).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
-                  {item.rating >= 4 && item.rating < 5 && Array(1).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
-                  {item.rating === 5 && Array(5).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
-                  <Text style={styles.subtitle}>{' '}({item.count_review})</Text>
+        {product.detailProductData.length > 0 &&
+          !product.detailProductIsLoading &&
+          product.detailProductData.map((item) => {
+            return (
+              <View>
+                {/* Item images */}
+                <ScrollView horizontal>
+                  {item.images.split(',').map((img, i) => {
+                    return (
+                      <Image
+                        source={{uri: `${API_URL}${img}`}}
+                        style={styles.image}
+                        key={i}
+                      />
+                    );
+                  })}
+                </ScrollView>
+                {/* Item information & description */}
+                <View style={styles.itemInfo}>
+                  <Text style={[styles.header, styles.price]}>
+                    Rp
+                    {item.price.toString().replace(/(.)(?=(\d{3})+$)/g, '$1.')}
+                  </Text>
+                  <Text
+                    numberOfLines={2}
+                    ellipsizeMode="tail"
+                    style={styles.header}>
+                    {item.name}
+                  </Text>
+                  <Text style={styles.subtitle}>{item.store_name}</Text>
+                  <View style={styles.rating}>
+                    {item.rating === 0 &&
+                      Array(5).fill(
+                        <Icon
+                          type="MaterialIcons"
+                          name="grade"
+                          style={styles.ratingIconInactive}
+                        />,
+                      )}
+                    {item.rating > 0 &&
+                      item.rating < 2 &&
+                      Array(1).fill(
+                        <Icon
+                          type="MaterialIcons"
+                          name="grade"
+                          style={styles.ratingIcon}
+                        />,
+                      )}
+                    {item.rating > 0 &&
+                      item.rating < 2 &&
+                      Array(4).fill(
+                        <Icon
+                          type="MaterialIcons"
+                          name="grade"
+                          style={styles.ratingIconInactive}
+                        />,
+                      )}
+                    {item.rating >= 2 &&
+                      item.rating < 3 &&
+                      Array(2).fill(
+                        <Icon
+                          type="MaterialIcons"
+                          name="grade"
+                          style={styles.ratingIcon}
+                        />,
+                      )}
+                    {item.rating >= 2 &&
+                      item.rating < 3 &&
+                      Array(3).fill(
+                        <Icon
+                          type="MaterialIcons"
+                          name="grade"
+                          style={styles.ratingIconInactive}
+                        />,
+                      )}
+                    {item.rating >= 3 &&
+                      item.rating < 4 &&
+                      Array(3).fill(
+                        <Icon
+                          type="MaterialIcons"
+                          name="grade"
+                          style={styles.ratingIcon}
+                        />,
+                      )}
+                    {item.rating >= 3 &&
+                      item.rating < 4 &&
+                      Array(2).fill(
+                        <Icon
+                          type="MaterialIcons"
+                          name="grade"
+                          style={styles.ratingIconInactive}
+                        />,
+                      )}
+                    {item.rating >= 4 &&
+                      item.rating < 5 &&
+                      Array(4).fill(
+                        <Icon
+                          type="MaterialIcons"
+                          name="grade"
+                          style={styles.ratingIcon}
+                        />,
+                      )}
+                    {item.rating >= 4 &&
+                      item.rating < 5 &&
+                      Array(1).fill(
+                        <Icon
+                          type="MaterialIcons"
+                          name="grade"
+                          style={styles.ratingIconInactive}
+                        />,
+                      )}
+                    {item.rating === 5 &&
+                      Array(5).fill(
+                        <Icon
+                          type="MaterialIcons"
+                          name="grade"
+                          style={styles.ratingIcon}
+                        />,
+                      )}
+                    <Text style={styles.subtitle}> ({item.count_review})</Text>
+                  </View>
+                </View>
+                <View>
+                  <Text style={styles.bold}>Description</Text>
+                  <Text style={styles.description}>{item.description}</Text>
                 </View>
               </View>
-              <View>
-                <Text style={styles.bold}>Description</Text>
-                <Text style={styles.description}>
-                  {item.description}
-                </Text>
-              </View>
-            </View>
-          );
-        })}
-
-        {/* Relevant item */}
-        {product.relevantProductsIsLoading ? <Spinner color="green" /> : <Text style={styles.relevantItem}>You can also like this</Text>}
-        <ScrollView horizontal>
-          {(product.relevantProductsData.length > 0 && !product.relevantProductsIsLoading) && product.relevantProductsData.map(item => {
-            return (
-              <Card style={styles.card} key={item.id}>
-                <CardItem cardBody>
-                  <Image source={{ uri: `${API_URL}${item.img_thumbnail}` }} style={styles.relevantImage} />
-                </CardItem>
-                <CardItem>
-                  <Body>
-                    <TouchableOpacity onPress={() => getItemDetail(item.id, item.category_id, item.category)}>
-                      <Text numberOfLines={2} ellipsizeMode="tail" style={styles.product}>{item.name}</Text>
-                    </TouchableOpacity>
-                    <Text style={[styles.price, styles.description, styles.bold]}>Rp{item.price.toString().replace(/(.)(?=(\d{3})+$)/g, '$1.')}</Text>
-                    <Text style={styles.subtitle}>{item.store_name}</Text>
-                    <View style={styles.rating}>
-                      {item.rating === 0 && Array(5).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
-                      {item.rating > 0 && item.rating < 2 && Array(1).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
-                      {item.rating > 0 && item.rating < 2 && Array(4).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
-                      {item.rating >= 2 && item.rating < 3 && Array(2).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
-                      {item.rating >= 2 && item.rating < 3 && Array(3).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
-                      {item.rating >= 3 && item.rating < 4 && Array(3).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
-                      {item.rating >= 3 && item.rating < 4 && Array(2).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
-                      {item.rating >= 4 && item.rating < 5 && Array(4).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
-                      {item.rating >= 4 && item.rating < 5 && Array(1).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIconInactive} />)}
-                      {item.rating === 5 && Array(5).fill(<Icon type="MaterialIcons" name="grade" style={styles.ratingIcon} />)}
-                      <Text style={styles.subtitle}>{' '}({item.count_review})</Text>
-                    </View>
-                  </Body>
-                </CardItem>
-              </Card>
             );
           })}
+
+        {/* Relevant item */}
+        {product.relevantProductsIsLoading ? (
+          <Spinner color="green" />
+        ) : (
+          <Text style={styles.relevantItem}>You can also like this</Text>
+        )}
+        <ScrollView horizontal>
+          {product.relevantProductsData.length > 0 &&
+            !product.relevantProductsIsLoading &&
+            product.relevantProductsData.map((item) => {
+              return (
+                <Card style={styles.card} key={item.id}>
+                  <CardItem cardBody>
+                    <Image
+                      source={{uri: `${API_URL}${item.img_thumbnail}`}}
+                      style={styles.relevantImage}
+                    />
+                  </CardItem>
+                  <CardItem>
+                    <Body>
+                      <TouchableOpacity
+                        onPress={() =>
+                          getItemDetail(
+                            item.id,
+                            item.category_id,
+                            item.category,
+                          )
+                        }>
+                        <Text
+                          numberOfLines={2}
+                          ellipsizeMode="tail"
+                          style={styles.product}>
+                          {item.name}
+                        </Text>
+                      </TouchableOpacity>
+                      <Text
+                        style={[styles.price, styles.description, styles.bold]}>
+                        Rp
+                        {item.price
+                          .toString()
+                          .replace(/(.)(?=(\d{3})+$)/g, '$1.')}
+                      </Text>
+                      <Text style={styles.subtitle}>{item.store_name}</Text>
+                      <View style={styles.rating}>
+                        {item.rating === 0 &&
+                          Array(5).fill(
+                            <Icon
+                              type="MaterialIcons"
+                              name="grade"
+                              style={styles.ratingIconInactive}
+                            />,
+                          )}
+                        {item.rating > 0 &&
+                          item.rating < 2 &&
+                          Array(1).fill(
+                            <Icon
+                              type="MaterialIcons"
+                              name="grade"
+                              style={styles.ratingIcon}
+                            />,
+                          )}
+                        {item.rating > 0 &&
+                          item.rating < 2 &&
+                          Array(4).fill(
+                            <Icon
+                              type="MaterialIcons"
+                              name="grade"
+                              style={styles.ratingIconInactive}
+                            />,
+                          )}
+                        {item.rating >= 2 &&
+                          item.rating < 3 &&
+                          Array(2).fill(
+                            <Icon
+                              type="MaterialIcons"
+                              name="grade"
+                              style={styles.ratingIcon}
+                            />,
+                          )}
+                        {item.rating >= 2 &&
+                          item.rating < 3 &&
+                          Array(3).fill(
+                            <Icon
+                              type="MaterialIcons"
+                              name="grade"
+                              style={styles.ratingIconInactive}
+                            />,
+                          )}
+                        {item.rating >= 3 &&
+                          item.rating < 4 &&
+                          Array(3).fill(
+                            <Icon
+                              type="MaterialIcons"
+                              name="grade"
+                              style={styles.ratingIcon}
+                            />,
+                          )}
+                        {item.rating >= 3 &&
+                          item.rating < 4 &&
+                          Array(2).fill(
+                            <Icon
+                              type="MaterialIcons"
+                              name="grade"
+                              style={styles.ratingIconInactive}
+                            />,
+                          )}
+                        {item.rating >= 4 &&
+                          item.rating < 5 &&
+                          Array(4).fill(
+                            <Icon
+                              type="MaterialIcons"
+                              name="grade"
+                              style={styles.ratingIcon}
+                            />,
+                          )}
+                        {item.rating >= 4 &&
+                          item.rating < 5 &&
+                          Array(1).fill(
+                            <Icon
+                              type="MaterialIcons"
+                              name="grade"
+                              style={styles.ratingIconInactive}
+                            />,
+                          )}
+                        {item.rating === 5 &&
+                          Array(5).fill(
+                            <Icon
+                              type="MaterialIcons"
+                              name="grade"
+                              style={styles.ratingIcon}
+                            />,
+                          )}
+                        <Text style={styles.subtitle}>
+                          {' '}
+                          ({item.count_review})
+                        </Text>
+                      </View>
+                    </Body>
+                  </CardItem>
+                </Card>
+              );
+            })}
         </ScrollView>
       </Content>
       <View style={styles.floatingBar}>
-        <Button rounded block success>
+        <Button rounded block success onPress={addToCart}>
           <Text>add to cart</Text>
         </Button>
       </View>

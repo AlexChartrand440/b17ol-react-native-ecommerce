@@ -30,4 +30,15 @@ export default {
       type: 'RESET_UPDATE',
     };
   },
+  addCart: (data, token) => {
+    return {
+      type: 'ADD_CART',
+      payload: http(token).post('/cart', qs.stringify(data)),
+    };
+  },
+  resetAdd: () => {
+    return {
+      type: 'RESET_ADD',
+    };
+  },
 };
