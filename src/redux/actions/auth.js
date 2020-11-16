@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import http from '../../helpers/http';
 import qs from 'querystring';
 
@@ -9,5 +8,12 @@ export default {
   }),
   logout: () => ({
     type: 'LOGOUT',
+  }),
+  register: (data) => ({
+    type: 'REGISTER',
+    payload: http().post('/public/costumer', qs.stringify(data)),
+  }),
+  resetRegister: () => ({
+    type: 'RESET_REGISTER',
   }),
 };

@@ -1,5 +1,5 @@
-import React from 'react';
-import {TouchableOpacity, StyleSheet, View} from 'react-native';
+import React, {useEffect} from 'react';
+import {Alert, TouchableOpacity, StyleSheet, View} from 'react-native';
 import {
   Container,
   Content,
@@ -15,8 +15,15 @@ import {
 } from 'native-base';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
+import {useDispatch, useSelector} from 'react-redux';
+
+// import actions
+import authAction from '../redux/actions/auth';
 
 export default function Signup({navigation}) {
+  const dispatch = useDispatch();
+  const auth = useSelector((state) => state.auth);
+
   const schema = Yup.object().shape({
     name: Yup.string().max(50, 'Max 50 character').required('Required field'),
     email: Yup.string()
@@ -28,12 +35,20 @@ export default function Signup({navigation}) {
       .required('Required field'),
   });
 
+  useEffect(() => {
+    if (auth.isRegister) {
+      Alert.alert('Register succesful. Login first!');
+      dispatch(authAction.resetRegister());
+      navigation.navigate('Login');
+    }
+  });
+
   function login() {
     navigation.navigate('Login');
   }
 
-  function doSignup() {
-    navigation.navigate('Login');
+  function doSignup(values) {
+    dispatch(authAction.register(values));
   }
 
   return (
@@ -48,7 +63,7 @@ export default function Signup({navigation}) {
             password: '',
           }}
           validationSchema={schema}
-          onSubmit={(values) => console.log(values)}>
+          onSubmit={(values) => doSignup(values)}>
           {({
             handleChange,
             handleBlur,
