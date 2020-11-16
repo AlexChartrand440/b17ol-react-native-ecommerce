@@ -1,6 +1,5 @@
-/* eslint-disable prettier/prettier */
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
+import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import {
   Container,
   Content,
@@ -13,11 +12,11 @@ import {
   Label,
   Input,
 } from 'native-base';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
 
-export default function Settings({ navigation }) {
-  const profile = useSelector(state => state.profile);
+export default function Settings({navigation}) {
+  const profile = useSelector((state) => state.profile);
 
   function updatePassword() {
     navigation.navigate('Update Password');
@@ -39,32 +38,41 @@ export default function Settings({ navigation }) {
             <Text style={styles.text}>Edit</Text>
           </TouchableOpacity>
         </View>
-        {(profile.profileData && !profile.profileIsError) && profile.profileData.map(user => {
-          return (
-            <View key={user.id}>
-              <Card style={styles.card}>
-                <CardItem>
-                  <Body>
-                    <Item floatingLabel>
-                      <Label style={styles.text}>Full name</Label>
-                      <Input value={user.name} disabled />
-                    </Item>
-                  </Body>
-                </CardItem>
-              </Card>
-              <Card style={styles.card}>
-                <CardItem>
-                  <Body>
-                    <Item floatingLabel>
-                      <Label style={styles.text}>Date of birth</Label>
-                      <Input value={dayjs(user.birthday).format('DD/MM/YYYY')} disabled />
-                    </Item>
-                  </Body>
-                </CardItem>
-              </Card>
-            </View>
-          );
-        })}
+        {profile.profileData &&
+          !profile.profileIsError &&
+          profile.profileData.map((user) => {
+            return (
+              <View key={user.id}>
+                <Card style={styles.card}>
+                  <CardItem>
+                    <Body>
+                      <Item floatingLabel>
+                        <Label style={styles.text}>Full name</Label>
+                        <Input value={user.name} disabled />
+                      </Item>
+                    </Body>
+                  </CardItem>
+                </Card>
+                <Card style={styles.card}>
+                  <CardItem>
+                    <Body>
+                      <Item floatingLabel>
+                        <Label style={styles.text}>Date of birth</Label>
+                        <Input
+                          value={
+                            user.birthday !== null
+                              ? dayjs(user.birthday).format('DD/MM/YYYY')
+                              : '-'
+                          }
+                          disabled
+                        />
+                      </Item>
+                    </Body>
+                  </CardItem>
+                </Card>
+              </View>
+            );
+          })}
 
         {/* Password */}
         <View style={[styles.spaceBetween, styles.marginBottom]}>
@@ -85,7 +93,9 @@ export default function Settings({ navigation }) {
         </Card>
 
         {/* Notification */}
-        <Text style={[styles.subHeader, styles.marginBottom]}>Notifications</Text>
+        <Text style={[styles.subHeader, styles.marginBottom]}>
+          Notifications
+        </Text>
         <View style={[styles.spaceBetween, styles.marginBottom]}>
           <Text style={styles.text}>Sales</Text>
           <Switch />
