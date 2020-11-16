@@ -33,12 +33,24 @@ export default function Bag({navigation}) {
     }
   });
 
+  useEffect(() => {
+    if (cart.isUpdate) {
+      dispatch(cartAction.resetUpdate());
+      dispatch(cartAction.getCustomerCart(auth.token));
+    }
+  });
+
   function checkout() {
     navigation.navigate('Checkout');
   }
 
   function deleteItem(item_id) {
     dispatch(cartAction.deleteCart(item_id, auth.token));
+  }
+
+  function updateQuantity(quantity, item_id) {
+    const data = {quantity};
+    dispatch(cartAction.updateQuantity(item_id, auth.token, data));
   }
 
   return (
@@ -85,7 +97,10 @@ export default function Bag({navigation}) {
                       <View style={styles.card}>
                         <TouchableOpacity
                           style={styles.counterButton}
-                          disabled={item.quantity === 1 ? true : false}>
+                          disabled={item.quantity === 1 ? true : false}
+                          onPress={() =>
+                            updateQuantity(item.quantity - 1, item.item_id)
+                          }>
                           <Icon
                             type="MaterialIcons"
                             name="remove"
@@ -97,7 +112,11 @@ export default function Bag({navigation}) {
                           {item.quantity}
                           {'  '}
                         </Text>
-                        <TouchableOpacity style={styles.counterButton}>
+                        <TouchableOpacity
+                          style={styles.counterButton}
+                          onPress={() =>
+                            updateQuantity(item.quantity + 1, item.item_id)
+                          }>
                           <Icon
                             type="MaterialIcons"
                             name="add"

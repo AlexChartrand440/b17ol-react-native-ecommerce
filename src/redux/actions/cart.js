@@ -1,4 +1,5 @@
 import http from '../../helpers/http';
+import qs from 'querystring';
 
 export default {
   getCustomerCart: (token) => {
@@ -16,6 +17,17 @@ export default {
   resetDelete: () => {
     return {
       type: 'RESET_DELETE',
+    };
+  },
+  updateQuantity: (item_id, token, data) => {
+    return {
+      type: 'UPDATE_CART',
+      payload: http(token).patch(`/cart/${item_id}`, qs.stringify(data)),
+    };
+  },
+  resetUpdate: () => {
+    return {
+      type: 'RESET_UPDATE',
     };
   },
 };

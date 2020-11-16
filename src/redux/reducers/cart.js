@@ -9,6 +9,11 @@ const initialState = {
   deleteIsError: false,
   deleteAlert: '',
   isDelete: false,
+
+  updateIsLoading: false,
+  updateIsError: false,
+  updateAlert: '',
+  isUpdate: false,
 };
 
 export default (state = initialState, action) => {
@@ -66,6 +71,36 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isDelete: false,
+      };
+    }
+    case 'UPDATE_CART_PENDING': {
+      return {
+        ...state,
+        updateIsLoading: true,
+        updateAlert: 'Update item quantity in progress. Please wait..',
+      };
+    }
+    case 'UPDATE_CART_REJECTED': {
+      return {
+        ...state,
+        updateIsLoading: false,
+        updateIsError: true,
+        updateAlert: action.payload.response.data.message,
+      };
+    }
+    case 'UPDATE_CART_FULFILLED': {
+      return {
+        ...state,
+        updateIsLoading: false,
+        updateIsError: false,
+        isUpdate: true,
+        updateAlert: 'Successfully update item quantity',
+      };
+    }
+    case 'RESET_UPDATE': {
+      return {
+        ...state,
+        isUpdate: false,
       };
     }
     default: {
