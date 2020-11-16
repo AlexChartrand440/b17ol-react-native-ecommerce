@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 const initialState = {
   newProductsData: [],
   newProductsIsLoading: false,
@@ -24,6 +23,12 @@ const initialState = {
   productByCategoryIsLoading: false,
   productByCategoryIsError: false,
   productByCategoryAlertMsg: '',
+
+  allProductsData: [],
+  allProductsPageInfo: {},
+  allProductsIsLoading: false,
+  allProductsIsError: false,
+  allProductsAlertMsg: '',
 };
 
 export default (state = initialState, action) => {
@@ -152,6 +157,38 @@ export default (state = initialState, action) => {
         productByCategoryIsLoading: true,
         productByCategoryIsError: false,
         productByCategoryData: [],
+      };
+    }
+    case 'GET_ALL_PRODUCTS_PENDING': {
+      return {
+        ...state,
+        allProductsIsLoading: true,
+      };
+    }
+    case 'GET_ALL_PRODUCTS_REJECTED': {
+      return {
+        ...state,
+        allProductsIsLoading: false,
+        allProductsIsError: true,
+        allProductsAlertMsg: action.payload.response.data.message,
+      };
+    }
+    case 'GET_ALL_PRODUCTS_FULFILLED': {
+      return {
+        ...state,
+        allProductsIsLoading: false,
+        allProductsIsError: false,
+        allProductsData: action.payload.data.data,
+        allProductsPageInfo: action.payload.data.pageInfo,
+      };
+    }
+    case 'RESET_ALL_PRODUCTS': {
+      return {
+        ...state,
+        allProductsData: [],
+        allProductsPageInfo: {},
+        allProductsIsLoading: false,
+        allProductsIsError: false,
       };
     }
     default: {

@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import http from '../../helpers/http';
 
 export default {
@@ -19,7 +18,9 @@ export default {
   }),
   getRelevantProducts: (id) => ({
     type: 'GET_RELEVANT_PRODUCTS',
-    payload: http().get(`/public/item?limit=10&search[category_id]=${id}&sort[rating]=desc`),
+    payload: http().get(
+      `/public/item?limit=10&search[category_id]=${id}&sort[rating]=desc`,
+    ),
   }),
   getProductByCategory: (id) => ({
     type: 'GET_PRODUCT_BY_CATEGORY',
@@ -27,5 +28,19 @@ export default {
   }),
   resetCategory: () => ({
     type: 'RESET_CATEGORY',
+  }),
+  getAllProducts: (
+    keyword = '',
+    sortColumn = 'rating',
+    sortOption = 'desc',
+    page = 1,
+  ) => ({
+    type: 'GET_ALL_PRODUCTS',
+    payload: http().get(
+      `/public/item?limit=10&search=${keyword}&sort[${sortColumn}]=${sortOption}&page=${page}`,
+    ),
+  }),
+  resetAllProducts: () => ({
+    type: 'RESET_ALL_PRODUCTS',
   }),
 };

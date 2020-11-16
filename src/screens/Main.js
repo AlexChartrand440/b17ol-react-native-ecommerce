@@ -27,6 +27,7 @@ import UpdateShippingAddress from './UpdateShippingAddress';
 import Settings from './Settings';
 import UpdatePassword from './UpdatePassword';
 import UpdateProfile from './UpdateProfile';
+import ItemAll from './ItemAll';
 
 // import navigator
 const Stack = createStackNavigator();
@@ -51,6 +52,15 @@ function ShoppingStackScreen() {
         component={Item}
         options={{
           title: '',
+          headerTitleAlign: 'center',
+          headerRight: iconSearch,
+        }}
+      />
+      <ShoppingStack.Screen
+        name="All_Item"
+        component={ItemAll}
+        options={{
+          title: 'All Items',
           headerTitleAlign: 'center',
           headerRight: iconSearch,
         }}
