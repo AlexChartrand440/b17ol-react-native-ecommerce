@@ -1,6 +1,5 @@
-/* eslint-disable prettier/prettier */
-import React, { useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, {useEffect} from 'react';
+import {StyleSheet, View} from 'react-native';
 import {
   Container,
   Content,
@@ -13,8 +12,8 @@ import {
   Icon,
   Spinner,
 } from 'native-base';
-import { useDispatch, useSelector } from 'react-redux';
-import { API_URL } from '@env';
+import {useDispatch, useSelector} from 'react-redux';
+import {API_URL} from '@env';
 
 // import default avatar
 import User from '../assets/img/avatar.png';
@@ -23,14 +22,15 @@ import User from '../assets/img/avatar.png';
 import authAction from '../redux/actions/auth';
 import profileAction from '../redux/actions/profile';
 
-export default function Profile({ navigation }) {
+export default function Profile({navigation}) {
   const dispatch = useDispatch();
-  const auth = useSelector(state => state.auth);
-  const profile = useSelector(state => state.profile);
+  const auth = useSelector((state) => state.auth);
+  const profile = useSelector((state) => state.profile);
 
   useEffect(() => {
     dispatch(profileAction.getProfile(auth.token));
-  }, [auth.token, dispatch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
 
   function getShippingAddress() {
     navigation.navigate('Shipping Address');
@@ -47,21 +47,27 @@ export default function Profile({ navigation }) {
   return (
     <Container style={styles.parent}>
       <Content padder>
-        <Text style={styles.header}>
-          My Profile
-        </Text>
+        <Text style={styles.header}>My Profile</Text>
         {profile.profileIsLoading && <Spinner color="green" />}
-        {(profile.profileData && !profile.profileIsError) && profile.profileData.map(user => {
-          return (
-            <View style={styles.avatar} key={user.id}>
-              <Thumbnail source={user.photo_profile === '' ? User : { uri: `${API_URL}${user.photo_profile}` }} />
-              <View style={styles.personalInfo}>
-                <Text style={styles.fullname}>{user.name}</Text>
-                <Text style={styles.email}>{user.email}</Text>
+        {profile.profileData &&
+          !profile.profileIsError &&
+          profile.profileData.map((user) => {
+            return (
+              <View style={styles.avatar} key={user.id}>
+                <Thumbnail
+                  source={
+                    user.photo_profile === ''
+                      ? User
+                      : {uri: `${API_URL}${user.photo_profile}`}
+                  }
+                />
+                <View style={styles.personalInfo}>
+                  <Text style={styles.fullname}>{user.name}</Text>
+                  <Text style={styles.email}>{user.email}</Text>
+                </View>
               </View>
-            </View>
-          );
-        })}
+            );
+          })}
         <List>
           <ListItem>
             <Left>
