@@ -203,7 +203,7 @@ export default function Home({navigation}) {
               Find clothes that are trending recently!
             </Text>
           </View>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => viewAllItem('rating')}>
             <Text style={styles.subtitle}>View all</Text>
           </TouchableOpacity>
         </View>
