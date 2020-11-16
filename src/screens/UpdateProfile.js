@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Alert, StyleSheet, View, TouchableOpacity} from 'react-native';
 import {
   Container,
@@ -16,16 +16,21 @@ import {
 } from 'native-base';
 import {Picker} from '@react-native-picker/picker';
 import dayjs from 'dayjs';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {API_URL} from '@env';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import ImagePicker from 'react-native-image-picker';
 
+// import actions
+import profileAction from '../redux/actions/profile';
+
 // import default avatar
 import User from '../assets/img/avatar.png';
 
-export default function UpdateProfile() {
+export default function UpdateProfile({navigation}) {
+  const dispatch = useDispatch();
+  const auth = useSelector((state) => state.auth);
   const profile = useSelector((state) => state.profile);
   const {profileData} = profile;
 
@@ -44,6 +49,15 @@ export default function UpdateProfile() {
   const [birthdate, setBirthdate] = useState(profileData[0].birthday);
   const [photo, setPhoto] = useState(profileData[0].photo_profile);
   const [imgData, setImgData] = useState(null);
+
+  useEffect(() => {
+    if (profile.isEdit) {
+      Alert.alert('Edit profile succesful..');
+      dispatch(profileAction.resetEdit());
+      dispatch(profileAction.getProfile(auth.token));
+      navigation.navigate('Setting');
+    }
+  });
 
   function selectImage() {
     let options = {
@@ -70,6 +84,20 @@ export default function UpdateProfile() {
         setPhoto(source.uri);
       }
     });
+  }
+
+  function doUpdateProfile(values) {
+    const form = new FormData();
+    form.append('name', values.name);
+    form.append('email', values.email);
+    form.append('phone', values.phone);
+    form.append('gender_id', Number.parseInt(values.gender));
+    form.append('birthday', dayjs(birthdate).format('YYYY-MM-DD'));
+    if (imgData) {
+      form.append('image', imgData);
+    }
+
+    dispatch(profileAction.editProfile(form, auth.token));
   }
 
   return (
@@ -99,7 +127,7 @@ export default function UpdateProfile() {
             gender: profileData[0].gender === 'Man' ? 1 : 2,
           }}
           validationSchema={schema}
-          onSubmit={(values) => console.log(values)}>
+          onSubmit={(values) => doUpdateProfile(values)}>
           {({
             handleChange,
             handleBlur,
