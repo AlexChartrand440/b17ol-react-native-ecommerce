@@ -208,7 +208,9 @@ export default function UpdateProfile({navigation}) {
                     <Text style={styles.text}>Date of birth</Text>
                     <DatePicker
                       defaultDate={
-                        new Date(dayjs(birthdate).format('MM/DD/YYYY'))
+                        birthdate !== null
+                          ? new Date(dayjs(birthdate).format('MM/DD/YYYY'))
+                          : new Date(1900, 1, 1)
                       }
                       minimumDate={new Date(1900, 1, 1)}
                       maximumDate={new Date()}
