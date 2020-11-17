@@ -3,6 +3,11 @@ const initialState = {
   allAddressIsLoading: false,
   allAddressIsError: false,
   allAddressAlertMsg: '',
+
+  provincesData: [],
+  provincesIsLoading: false,
+  provincesIsError: false,
+  provincesAlertMsg: '',
 };
 
 export default (state = initialState, action) => {
@@ -29,6 +34,28 @@ export default (state = initialState, action) => {
         allAddressData: action.payload.data.success
           ? action.payload.data.data
           : [],
+      };
+    }
+    case 'GET_PROVINCES_PENDING': {
+      return {
+        ...state,
+        provincesIsLoading: true,
+      };
+    }
+    case 'GET_PROVINCES_REJECTED': {
+      return {
+        ...state,
+        provincesIsLoading: false,
+        provincesIsError: true,
+        provincesAlertMsg: action.payload.response.data.message,
+      };
+    }
+    case 'GET_PROVINCES_FULFILLED': {
+      return {
+        ...state,
+        provincesIsLoading: false,
+        provincesIsError: false,
+        provincesData: action.payload.data.data,
       };
     }
     default: {

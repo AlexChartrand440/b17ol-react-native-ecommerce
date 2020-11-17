@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet} from 'react-native';
 import {
   Container,
@@ -16,9 +16,22 @@ import {Picker} from '@react-native-picker/picker';
 import CheckBox from '@react-native-community/checkbox';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
+import {useDispatch, useSelector} from 'react-redux';
+
+// import actions
+import shippingAddressAction from '../redux/actions/shippingAddress';
 
 export default function AddShippingAddress() {
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
+  const [province, setProvince] = useState(1);
+
+  const dispatch = useDispatch();
+  const auth = useSelector((state) => state.auth);
+  const shippingAddress = useSelector((state) => state.shippingAddress);
+
+  useEffect(() => {
+    dispatch(shippingAddressAction.getProvinces());
+  }, [dispatch]);
 
   const schema = Yup.object().shape({
     addressName: Yup.string()
@@ -153,10 +166,20 @@ export default function AddShippingAddress() {
               <CardItem>
                 <Body style={styles.picker}>
                   <Text style={styles.text}>Province</Text>
-                  <Picker style={styles.pickerSize}>
-                    <Picker.Item label="Aceh" value="0" />
-                    <Picker.Item label="Sumatera Utara" value="1" />
-                    <Picker.Item label="Sumatera Barat" value="2" />
+                  <Picker
+                    style={styles.pickerSize}
+                    selectedValue={province}
+                    onValueChange={(value) => setProvince(value)}>
+                    {shippingAddress.provincesData.length > 0 &&
+                      shippingAddress.provincesData.map((_province) => {
+                        return (
+                          <Picker.Item
+                            label={_province.name}
+                            value={_province.id}
+                            key={_province.id}
+                          />
+                        );
+                      })}
                   </Picker>
                 </Body>
               </CardItem>

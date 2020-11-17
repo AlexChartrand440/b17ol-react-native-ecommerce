@@ -5,4 +5,8 @@ export default {
     type: 'GET_ALL_ADDRESS',
     payload: http(token).get('/shipping_address'),
   }),
+  getProvinces: () => ({
+    type: 'GET_PROVINCES',
+    payload: http().get('/public/province'),
+  }),
 };
