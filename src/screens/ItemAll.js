@@ -24,7 +24,7 @@ import productAction from '../redux/actions/product';
 
 export default function ItemAll({route, navigation}) {
   const dispatch = useDispatch();
-  const {sortColumn} = route.params;
+  const {sortColumn, keyword} = route.params;
   const product = useSelector((state) => state.product);
 
   const [data, setData] = useState([]);
@@ -33,7 +33,7 @@ export default function ItemAll({route, navigation}) {
   const [sortOrder, setSortOrder] = useState('desc');
 
   useEffect(() => {
-    dispatch(productAction.getAllProducts('', sortColumn, 'desc', 1));
+    dispatch(productAction.getAllProducts(keyword, sortColumn, 'desc', 1));
 
     if (sortColumn === 'rating') {
       setSort('1');
@@ -42,7 +42,14 @@ export default function ItemAll({route, navigation}) {
       setSort('2');
       setSortBy('created_at');
     }
-  }, [dispatch, sortColumn]);
+
+    if (keyword !== '') {
+      navigation.setOptions({title: keyword});
+    } else {
+      navigation.setOptions({title: 'All Items'});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, keyword, sortColumn]);
 
   useEffect(() => {
     if (product.allProductsData.length > 0) {
@@ -68,7 +75,9 @@ export default function ItemAll({route, navigation}) {
     const nextPage = product.allProductsPageInfo.currentPage + 1;
 
     if (product.allProductsPageInfo.nextLink) {
-      dispatch(productAction.getAllProducts('', sortBy, sortOrder, nextPage));
+      dispatch(
+        productAction.getAllProducts(keyword, sortBy, sortOrder, nextPage),
+      );
     }
   }
 
@@ -77,22 +86,22 @@ export default function ItemAll({route, navigation}) {
       setSort('1');
       setSortBy('rating');
       setSortOrder('desc');
-      dispatch(productAction.getAllProducts('', 'rating', 'desc', 1));
+      dispatch(productAction.getAllProducts(keyword, 'rating', 'desc', 1));
     } else if (value === '2') {
       setSort('2');
       setSortBy('created_at');
       setSortOrder('desc');
-      dispatch(productAction.getAllProducts('', 'created_at', 'desc', 1));
+      dispatch(productAction.getAllProducts(keyword, 'created_at', 'desc', 1));
     } else if (value === '3') {
       setSort('3');
       setSortBy('price');
       setSortOrder('asc');
-      dispatch(productAction.getAllProducts('', 'price', 'asc', 1));
+      dispatch(productAction.getAllProducts(keyword, 'price', 'asc', 1));
     } else if (value === '4') {
       setSort('4');
       setSortBy('price');
       setSortOrder('desc');
-      dispatch(productAction.getAllProducts('', 'price', 'desc', 1));
+      dispatch(productAction.getAllProducts(keyword, 'price', 'desc', 1));
     }
   }
 

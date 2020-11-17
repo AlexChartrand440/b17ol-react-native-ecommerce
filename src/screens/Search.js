@@ -1,17 +1,28 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Container, Item, Input, Icon, Content} from 'native-base';
 import {StyleSheet, TouchableOpacity} from 'react-native';
 
 export default function Search({navigation}) {
+  const [keyword, setKeyword] = useState('');
+
+  function searchItem() {
+    navigation.navigate('All_Item', {
+      sortColumn: 'rating',
+      keyword,
+    });
+  }
+
   return (
     <Container style={styles.parent}>
       <Content>
         <Item style={styles.search}>
           <Input
             placeholder="Search"
+            value={keyword}
+            onChangeText={(text) => setKeyword(text)}
             style={[styles.fontSize_14, styles.padding]}
           />
-          <TouchableOpacity>
+          <TouchableOpacity onPress={searchItem}>
             <Icon type="MaterialIcons" name="search" style={styles.padding} />
           </TouchableOpacity>
         </Item>

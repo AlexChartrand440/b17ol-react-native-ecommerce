@@ -44,7 +44,10 @@ export default function Home({navigation}) {
     dispatch(productAction.resetAllProducts());
     navigation.navigate('Shop', {
       screen: 'All_Item',
-      params: {sortColumn},
+      params: {
+        sortColumn,
+        keyword: '',
+      },
       initial: false,
     });
   }

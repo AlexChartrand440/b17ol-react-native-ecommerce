@@ -35,7 +35,10 @@ export default function Shop({navigation}) {
 
   function viewAllItem() {
     dispatch(productAction.resetAllProducts());
-    navigation.navigate('All_Item', {sortColumn: 'rating'});
+    navigation.navigate('All_Item', {
+      sortColumn: 'rating',
+      keyword: '',
+    });
   }
 
   return (
