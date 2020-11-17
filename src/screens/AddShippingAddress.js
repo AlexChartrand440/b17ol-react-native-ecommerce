@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet} from 'react-native';
+import {Alert, StyleSheet} from 'react-native';
 import {
   Container,
   Content,
@@ -21,11 +21,10 @@ import {useDispatch, useSelector} from 'react-redux';
 // import actions
 import shippingAddressAction from '../redux/actions/shippingAddress';
 
-export default function AddShippingAddress() {
+export default function AddShippingAddress({navigation}) {
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
   const [province, setProvince] = useState(1);
   const [city, setCity] = useState(1);
-
   const [cityByProvince, setCityByProvince] = useState([]);
 
   const dispatch = useDispatch();
@@ -46,6 +45,15 @@ export default function AddShippingAddress() {
     }
   }, [shippingAddress.provincesData, shippingAddress.citiesData, province]);
 
+  useEffect(() => {
+    if (shippingAddress.isAdd) {
+      Alert.alert('Add shipping address success');
+      dispatch(shippingAddressAction.resetAdd());
+      dispatch(shippingAddressAction.getAllAddress(auth.token));
+      navigation.navigate('Shipping Address');
+    }
+  });
+
   const schema = Yup.object().shape({
     addressName: Yup.string()
       .max(20, 'Max 20 characters')
@@ -65,6 +73,15 @@ export default function AddShippingAddress() {
       .required('Required field'),
   });
 
+  function doAddShippingAddress(values, _city) {
+    const data = {
+      ...values,
+      city: _city,
+      primaryAddress: toggleCheckBox,
+    };
+    dispatch(shippingAddressAction.addShippingAddress(data, auth.token));
+  }
+
   return (
     <Container style={styles.parent}>
       <Formik
@@ -76,7 +93,7 @@ export default function AddShippingAddress() {
           postalCode: '',
         }}
         validationSchema={schema}
-        onSubmit={(values) => console.log(values)}>
+        onSubmit={(values) => doAddShippingAddress(values, city)}>
         {({
           handleChange,
           handleBlur,

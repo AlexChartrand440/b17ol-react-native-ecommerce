@@ -13,6 +13,11 @@ const initialState = {
   citiesIsLoading: false,
   citiesIsError: false,
   citiesAlertMsg: '',
+
+  addIsLoading: false,
+  addIsError: false,
+  addAlert: '',
+  isAdd: false,
 };
 
 export default (state = initialState, action) => {
@@ -83,6 +88,36 @@ export default (state = initialState, action) => {
         citiesIsLoading: false,
         citiesIsError: false,
         citiesData: action.payload.data.data,
+      };
+    }
+    case 'ADD_ADDRESS_PENDING': {
+      return {
+        ...state,
+        addIsLoading: true,
+        addAlert: 'Add new shipping address in progress. Please wait..',
+      };
+    }
+    case 'ADD_ADDRESS_REJECTED': {
+      return {
+        ...state,
+        addIsLoading: false,
+        addIsError: true,
+        addAlert: action.payload.response.data.message,
+      };
+    }
+    case 'ADD_ADDRESS_FULFILLED': {
+      return {
+        ...state,
+        addIsLoading: false,
+        addIsError: false,
+        isAdd: true,
+        addAlert: 'Successfully add new shipping address',
+      };
+    }
+    case 'RESET_ADD': {
+      return {
+        ...state,
+        isAdd: false,
       };
     }
     default: {

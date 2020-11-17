@@ -1,4 +1,5 @@
 import http from '../../helpers/http';
+import qs from 'querystring';
 
 export default {
   getAllAddress: (token) => ({
@@ -12,5 +13,12 @@ export default {
   getCities: () => ({
     type: 'GET_CITIES',
     payload: http().get('/public/city'),
+  }),
+  addShippingAddress: (data, token) => ({
+    type: 'ADD_ADDRESS',
+    payload: http(token).post('/shipping_address', qs.stringify(data)),
+  }),
+  resetAdd: () => ({
+    type: 'RESET_ADD',
   }),
 };
