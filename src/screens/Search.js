@@ -21,6 +21,7 @@ export default function Search({navigation}) {
             value={keyword}
             onChangeText={(text) => setKeyword(text)}
             style={[styles.fontSize_14, styles.padding]}
+            onSubmitEditing={searchItem}
           />
           <TouchableOpacity onPress={searchItem}>
             <Icon type="MaterialIcons" name="search" style={styles.padding} />
