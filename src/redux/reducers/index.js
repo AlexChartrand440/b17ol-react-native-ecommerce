@@ -1,11 +1,11 @@
-/* eslint-disable prettier/prettier */
-import { combineReducers } from 'redux';
+import {combineReducers} from 'redux';
 
 import auth from './auth';
 import product from './product';
 import category from './category';
 import cart from './cart';
 import profile from './profile';
+import shippingAddress from './shippingAddress';
 
 export default combineReducers({
   auth,
@@ -13,4 +13,5 @@ export default combineReducers({
   category,
   cart,
   profile,
+  shippingAddress,
 });
