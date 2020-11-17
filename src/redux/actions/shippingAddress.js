@@ -9,4 +9,8 @@ export default {
     type: 'GET_PROVINCES',
     payload: http().get('/public/province'),
   }),
+  getCities: () => ({
+    type: 'GET_CITIES',
+    payload: http().get('/public/city'),
+  }),
 };

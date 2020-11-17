@@ -8,6 +8,11 @@ const initialState = {
   provincesIsLoading: false,
   provincesIsError: false,
   provincesAlertMsg: '',
+
+  citiesData: [],
+  citiesIsLoading: false,
+  citiesIsError: false,
+  citiesAlertMsg: '',
 };
 
 export default (state = initialState, action) => {
@@ -56,6 +61,28 @@ export default (state = initialState, action) => {
         provincesIsLoading: false,
         provincesIsError: false,
         provincesData: action.payload.data.data,
+      };
+    }
+    case 'GET_CITIES_PENDING': {
+      return {
+        ...state,
+        citiesIsLoading: true,
+      };
+    }
+    case 'GET_CITIES_REJECTED': {
+      return {
+        ...state,
+        citiesIsLoading: false,
+        citiesIsError: true,
+        citiesAlertMsg: action.payload.response.data.message,
+      };
+    }
+    case 'GET_CITIES_FULFILLED': {
+      return {
+        ...state,
+        citiesIsLoading: false,
+        citiesIsError: false,
+        citiesData: action.payload.data.data,
       };
     }
     default: {
