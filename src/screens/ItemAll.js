@@ -34,9 +34,14 @@ export default function ItemAll({route, navigation}) {
 
   useEffect(() => {
     if (product.allProductsData.length > 0) {
-      setData(product.allProductsData);
+      if (product.allProductsPageInfo.currentPage === 1) {
+        setData(product.allProductsData);
+      } else {
+        setData(data.concat(product.allProductsData));
+      }
     }
-  }, [product.allProductsData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product.allProductsData.length, product.allProductsPageInfo.currentPage]);
 
   function getItemDetail(_id, category_id, category) {
     dispatch(productAction.resetDetailProduct());
@@ -45,6 +50,14 @@ export default function ItemAll({route, navigation}) {
       category_id,
       category,
     });
+  }
+
+  function loadMore() {
+    const nextPage = product.allProductsPageInfo.currentPage + 1;
+
+    if (product.allProductsPageInfo.nextLink) {
+      dispatch(productAction.getAllProducts('', sortColumn, 'desc', nextPage));
+    }
   }
 
   return (
@@ -64,7 +77,6 @@ export default function ItemAll({route, navigation}) {
         </TouchableOpacity>
       </View>
       {product.allProductsIsLoading && <Spinner color="green" />}
-      {/* <View style={styles.productList}> */}
       {/* Product list section */}
       <FlatList
         data={data}
@@ -190,8 +202,10 @@ export default function ItemAll({route, navigation}) {
           </Card>
         )}
         numColumns={2}
+        keyExtractor={(item, index) => index}
+        onEndReached={async () => await loadMore()}
+        onEndReachedThreshold={0.01}
       />
-      {/* </View> */}
     </Container>
   );
 }
