@@ -1,11 +1,10 @@
-/* eslint-disable prettier/prettier */
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Icon } from 'native-base';
-import { StyleSheet } from 'react-native';
-import { useSelector } from 'react-redux';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {Icon} from 'native-base';
+import {StyleSheet, TouchableOpacity} from 'react-native';
+import {useSelector} from 'react-redux';
 
 // import screens
 import Signup from './Signup';
@@ -28,6 +27,7 @@ import Settings from './Settings';
 import UpdatePassword from './UpdatePassword';
 import UpdateProfile from './UpdateProfile';
 import ItemAll from './ItemAll';
+import Search from './Search';
 
 // import navigator
 const Stack = createStackNavigator();
@@ -41,29 +41,34 @@ function ShoppingStackScreen() {
       <ShoppingStack.Screen
         name="Category"
         component={Shop}
-        options={{
+        options={({navigation}) => ({
           title: 'Category',
-          headerRight: iconSearch,
           headerTitleAlign: 'center',
-        }}
+          headerRight: () => iconSearch(navigation),
+        })}
       />
       <ShoppingStack.Screen
         name="Item"
         component={Item}
-        options={{
+        options={({navigation}) => ({
           title: '',
           headerTitleAlign: 'center',
-          headerRight: iconSearch,
-        }}
+          headerRight: () => iconSearch(navigation),
+        })}
       />
       <ShoppingStack.Screen
         name="All_Item"
         component={ItemAll}
-        options={{
+        options={({navigation}) => ({
           title: 'All Items',
           headerTitleAlign: 'center',
-          headerRight: iconSearch,
-        }}
+          headerRight: () => iconSearch(navigation),
+        })}
+      />
+      <ShoppingStack.Screen
+        name="Search"
+        component={Search}
+        options={{headerShown: false}}
       />
     </ShoppingStack.Navigator>
   );
@@ -131,8 +136,12 @@ function MainStackScreen() {
   );
 }
 
-function iconSearch() {
-  return <Icon type="MaterialIcons" name="search" style={styles.icon} />;
+function iconSearch(navigation) {
+  return (
+    <TouchableOpacity onPress={() => navigation.navigate('Search')}>
+      <Icon type="MaterialIcons" name="search" style={styles.icon} />
+    </TouchableOpacity>
+  );
 }
 
 function iconShare() {
@@ -140,7 +149,7 @@ function iconShare() {
 }
 
 export default function Main() {
-  const auth = useSelector(state => state.auth);
+  const auth = useSelector((state) => state.auth);
 
   return (
     <NavigationContainer>
@@ -149,90 +158,90 @@ export default function Main() {
           <Stack.Screen
             name="Signup"
             component={Signup}
-            options={{ title: '' }}
+            options={{title: ''}}
           />
-          <Stack.Screen name="Login" component={Login} options={{ title: '' }} />
+          <Stack.Screen name="Login" component={Login} options={{title: ''}} />
           <Stack.Screen
             name="Forgot"
             component={Forgot}
-            options={{ title: '' }}
+            options={{title: ''}}
           />
           <Stack.Screen
             name="Reset Password"
             component={ResetPassword}
-            options={{ title: '' }}
+            options={{title: ''}}
           />
         </Stack.Navigator>
       ) : (
-          <MainStack.Navigator>
-            <MainStack.Screen
-              name="Main"
-              component={MainStackScreen}
-              options={{ headerShown: false }}
-            />
-            <MainStack.Screen
-              name="Item Detail"
-              component={Detail}
-              options={{
-                title: '',
-                headerTitleAlign: 'center',
-                headerRight: iconShare,
-              }}
-            />
-            <MainStack.Screen
-              name="Checkout"
-              component={Checkout}
-              options={{ headerTitleAlign: 'center' }}
-            />
-            <MainStack.Screen
-              name="Success"
-              component={Success}
-              options={{ headerShown: false }}
-            />
-            <MainStack.Screen
-              name="Shipping Address"
-              component={ShippingAddress}
-              options={{ headerTitleAlign: 'center' }}
-            />
-            <MainStack.Screen
-              name="Add Shipping Address"
-              component={AddShippingAddress}
-              options={{
-                headerTitleAlign: 'center',
-                title: 'New Shipping Address',
-              }}
-            />
-            <MainStack.Screen
-              name="Update Shipping Address"
-              component={UpdateShippingAddress}
-              options={{
-                headerTitleAlign: 'center',
-                title: 'Edit Shipping Address',
-              }}
-            />
-            <MainStack.Screen
-              name="Setting"
-              component={Settings}
-              options={{ title: '' }}
-            />
-            <MainStack.Screen
-              name="Update Password"
-              component={UpdatePassword}
-              options={{
-                headerTitleAlign: 'center',
-                title: 'Change Password',
-              }}
-            />
-            <MainStack.Screen
-              name="Update Profile"
-              component={UpdateProfile}
-              options={{
-                headerTitleAlign: 'center',
-                title: 'Edit Profile',
-              }}
-            />
-          </MainStack.Navigator>
-        )}
+        <MainStack.Navigator>
+          <MainStack.Screen
+            name="Main"
+            component={MainStackScreen}
+            options={{headerShown: false}}
+          />
+          <MainStack.Screen
+            name="Item Detail"
+            component={Detail}
+            options={{
+              title: '',
+              headerTitleAlign: 'center',
+              headerRight: iconShare,
+            }}
+          />
+          <MainStack.Screen
+            name="Checkout"
+            component={Checkout}
+            options={{headerTitleAlign: 'center'}}
+          />
+          <MainStack.Screen
+            name="Success"
+            component={Success}
+            options={{headerShown: false}}
+          />
+          <MainStack.Screen
+            name="Shipping Address"
+            component={ShippingAddress}
+            options={{headerTitleAlign: 'center'}}
+          />
+          <MainStack.Screen
+            name="Add Shipping Address"
+            component={AddShippingAddress}
+            options={{
+              headerTitleAlign: 'center',
+              title: 'New Shipping Address',
+            }}
+          />
+          <MainStack.Screen
+            name="Update Shipping Address"
+            component={UpdateShippingAddress}
+            options={{
+              headerTitleAlign: 'center',
+              title: 'Edit Shipping Address',
+            }}
+          />
+          <MainStack.Screen
+            name="Setting"
+            component={Settings}
+            options={{title: ''}}
+          />
+          <MainStack.Screen
+            name="Update Password"
+            component={UpdatePassword}
+            options={{
+              headerTitleAlign: 'center',
+              title: 'Change Password',
+            }}
+          />
+          <MainStack.Screen
+            name="Update Profile"
+            component={UpdateProfile}
+            options={{
+              headerTitleAlign: 'center',
+              title: 'Edit Profile',
+            }}
+          />
+        </MainStack.Navigator>
+      )}
     </NavigationContainer>
   );
 }
