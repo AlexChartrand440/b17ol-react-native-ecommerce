@@ -17,6 +17,7 @@ import {
 } from 'native-base';
 import {useDispatch, useSelector} from 'react-redux';
 import {API_URL} from '@env';
+import {Picker} from '@react-native-picker/picker';
 
 // import actions
 import productAction from '../redux/actions/product';
@@ -27,9 +28,20 @@ export default function ItemAll({route, navigation}) {
   const product = useSelector((state) => state.product);
 
   const [data, setData] = useState([]);
+  const [sort, setSort] = useState('');
+  const [sortBy, setSortBy] = useState('');
+  const [sortOrder, setSortOrder] = useState('desc');
 
   useEffect(() => {
     dispatch(productAction.getAllProducts('', sortColumn, 'desc', 1));
+
+    if (sortColumn === 'rating') {
+      setSort('1');
+      setSortBy('rating');
+    } else if (sortColumn === 'created_at') {
+      setSort('2');
+      setSortBy('created_at');
+    }
   }, [dispatch, sortColumn]);
 
   useEffect(() => {
@@ -41,7 +53,7 @@ export default function ItemAll({route, navigation}) {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [product.allProductsData.length, product.allProductsPageInfo.currentPage]);
+  }, [product.allProductsData, product.allProductsPageInfo.currentPage]);
 
   function getItemDetail(_id, category_id, category) {
     dispatch(productAction.resetDetailProduct());
@@ -56,7 +68,31 @@ export default function ItemAll({route, navigation}) {
     const nextPage = product.allProductsPageInfo.currentPage + 1;
 
     if (product.allProductsPageInfo.nextLink) {
-      dispatch(productAction.getAllProducts('', sortColumn, 'desc', nextPage));
+      dispatch(productAction.getAllProducts('', sortBy, sortOrder, nextPage));
+    }
+  }
+
+  function setPicker(value) {
+    if (value === '1') {
+      setSort('1');
+      setSortBy('rating');
+      setSortOrder('desc');
+      dispatch(productAction.getAllProducts('', 'rating', 'desc', 1));
+    } else if (value === '2') {
+      setSort('2');
+      setSortBy('created_at');
+      setSortOrder('desc');
+      dispatch(productAction.getAllProducts('', 'created_at', 'desc', 1));
+    } else if (value === '3') {
+      setSort('3');
+      setSortBy('price');
+      setSortOrder('asc');
+      dispatch(productAction.getAllProducts('', 'price', 'asc', 1));
+    } else if (value === '4') {
+      setSort('4');
+      setSortBy('price');
+      setSortOrder('desc');
+      dispatch(productAction.getAllProducts('', 'price', 'desc', 1));
     }
   }
 
@@ -72,7 +108,15 @@ export default function ItemAll({route, navigation}) {
         <TouchableOpacity>
           <View style={styles.advFuncIcon}>
             <Icon type="MaterialIcons" name="sort" />
-            <Text style={styles.subtitle}> Price: lowest to high</Text>
+            <Picker
+              style={styles.pickerSize}
+              selectedValue={sort}
+              onValueChange={(value) => setPicker(value)}>
+              <Picker.Item label="Popular" value="1" />
+              <Picker.Item label="Newest" value="2" />
+              <Picker.Item label="Price: lowest to high" value="3" />
+              <Picker.Item label="Price: high to lowest" value="4" />
+            </Picker>
           </View>
         </TouchableOpacity>
       </View>
@@ -269,5 +313,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 8,
+  },
+  pickerSize: {
+    height: 24,
+    width: 150,
   },
 });
