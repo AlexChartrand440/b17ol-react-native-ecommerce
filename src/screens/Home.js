@@ -42,7 +42,11 @@ export default function Home({navigation}) {
 
   function viewAllItem(sortColumn) {
     dispatch(productAction.resetAllProducts());
-    navigation.navigate('All_Item', {sortColumn});
+    navigation.navigate('Shop', {
+      screen: 'All_Item',
+      params: {sortColumn},
+      initial: false,
+    });
   }
 
   return (
