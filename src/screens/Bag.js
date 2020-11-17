@@ -24,7 +24,8 @@ export default function Bag({navigation}) {
 
   useEffect(() => {
     dispatch(cartAction.getCustomerCart(auth.token));
-  }, [auth.token, dispatch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
 
   useEffect(() => {
     if (cart.isDelete) {
