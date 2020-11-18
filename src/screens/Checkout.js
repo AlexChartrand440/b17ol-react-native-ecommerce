@@ -1,6 +1,5 @@
-/* eslint-disable prettier/prettier */
-import React from 'react';
-import { StyleSheet, View, TouchableOpacity, Image } from 'react-native';
+import React, {useEffect} from 'react';
+import {StyleSheet, View, TouchableOpacity, Image} from 'react-native';
 import {
   Container,
   Content,
@@ -11,11 +10,29 @@ import {
   Button,
 } from 'native-base';
 import CheckBox from '@react-native-community/checkbox';
+import {useDispatch, useSelector} from 'react-redux';
+
+// import actions
+import shippingAddressAction from '../redux/actions/shippingAddress';
 
 // import logo image
 import Logo from '../assets/img/logo.png';
 
-export default function Checkout({ navigation }) {
+export default function Checkout({navigation}) {
+  const dispatch = useDispatch();
+  const auth = useSelector((state) => state.auth);
+  const cart = useSelector((state) => state.cart);
+  const shippingAddress = useSelector((state) => state.shippingAddress);
+
+  const {cartSummary} = cart;
+  const delivery = 20000;
+  const total = cartSummary + delivery;
+
+  useEffect(() => {
+    dispatch(shippingAddressAction.getPrimaryAddress(auth.token));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
+
   function submitOrder() {
     navigation.navigate('Success');
   }
@@ -28,19 +45,31 @@ export default function Checkout({ navigation }) {
     <Container style={styles.parent}>
       <Content padder>
         <Text style={styles.header}>Shipping address</Text>
-        <Card style={styles.card}>
-          <CardItem>
-            <Body>
-              <View style={styles.floatingText}>
-                <Text style={[styles.text, styles.bold]}>Matilda Brown | 081233448833</Text>
-                <TouchableOpacity onPress={changeShippingAddress}>
-                  <Text style={[styles.text, styles.bold, styles.link]}>Change</Text>
-                </TouchableOpacity>
-              </View>
-              <Text style={styles.text}>Perumahan Sapphire Mediterania, Wiradadi, Kec. Sokaraja, Kabupaten Banyumas, Jawa Tengah, 53181 [Tokopedia Note: blok c 16] Sokaraja, Kab. Banyumas, 53181</Text>
-            </Body>
-          </CardItem>
-        </Card>
+        {shippingAddress.primaryData.length > 0 ? (
+          shippingAddress.primaryData.map((address) => {
+            return (
+              <Card style={styles.card} key={address.id}>
+                <CardItem>
+                  <Body>
+                    <View style={styles.floatingText}>
+                      <Text style={[styles.text, styles.bold]}>
+                        {address.recipient_name} | {address.recipient_phone}
+                      </Text>
+                      <TouchableOpacity onPress={changeShippingAddress}>
+                        <Text style={[styles.text, styles.bold, styles.link]}>
+                          Change
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                    <Text style={styles.text}>{address.full_address}</Text>
+                  </Body>
+                </CardItem>
+              </Card>
+            );
+          })
+        ) : (
+          <Text style={styles.text}>Primary shipping address not found!</Text>
+        )}
         <Text style={styles.header}>Payment</Text>
         <View style={styles.floatingText}>
           <View style={styles.paymentLogo}>
@@ -55,15 +84,21 @@ export default function Checkout({ navigation }) {
       <View style={styles.floatingBar}>
         <View style={styles.floatingText}>
           <Text style={styles.text}>Order</Text>
-          <Text style={styles.totalPrice}>Rp949.000</Text>
+          <Text style={styles.totalPrice}>
+            Rp{cartSummary.toString().replace(/(.)(?=(\d{3})+$)/g, '$1.')}
+          </Text>
         </View>
         <View style={styles.floatingText}>
           <Text style={styles.text}>Delivery</Text>
-          <Text style={styles.totalPrice}>Rp20.000</Text>
+          <Text style={styles.totalPrice}>
+            Rp{delivery.toString().replace(/(.)(?=(\d{3})+$)/g, '$1.')}
+          </Text>
         </View>
         <View style={styles.floatingText}>
           <Text style={styles.text}>Summary</Text>
-          <Text style={styles.totalPrice}>Rp969.000</Text>
+          <Text style={styles.totalPrice}>
+            Rp{total.toString().replace(/(.)(?=(\d{3})+$)/g, '$1.')}
+          </Text>
         </View>
         <Button
           rounded

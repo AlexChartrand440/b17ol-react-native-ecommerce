@@ -28,6 +28,11 @@ const initialState = {
   addressIsLoading: false,
   addressIsError: false,
   addressAlertMsg: '',
+
+  primaryData: [],
+  primaryIsLoading: false,
+  primaryIsError: false,
+  primaryAlertMsg: '',
 };
 
 export default (state = initialState, action) => {
@@ -186,6 +191,28 @@ export default (state = initialState, action) => {
         addressIsLoading: false,
         addressIsError: false,
         addressData: action.payload.data.data,
+      };
+    }
+    case 'GET_PRIMARY_ADDRESS_PENDING': {
+      return {
+        ...state,
+        primaryIsLoading: true,
+      };
+    }
+    case 'GET_PRIMARY_ADDRESS_REJECTED': {
+      return {
+        ...state,
+        primaryIsLoading: false,
+        primaryIsError: true,
+        primaryAlertMsg: action.payload.response.data.message,
+      };
+    }
+    case 'GET_PRIMARY_ADDRESS_FULFILLED': {
+      return {
+        ...state,
+        primaryIsLoading: false,
+        primaryIsError: false,
+        primaryData: action.payload.data.data,
       };
     }
     default: {
