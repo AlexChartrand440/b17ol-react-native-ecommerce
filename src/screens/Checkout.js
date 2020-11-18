@@ -14,6 +14,8 @@ import {useDispatch, useSelector} from 'react-redux';
 
 // import actions
 import shippingAddressAction from '../redux/actions/shippingAddress';
+import cartAction from '../redux/actions/cart';
+import orderAction from '../redux/actions/order';
 
 // import logo image
 import Logo from '../assets/img/logo.png';
@@ -23,6 +25,7 @@ export default function Checkout({navigation}) {
   const auth = useSelector((state) => state.auth);
   const cart = useSelector((state) => state.cart);
   const shippingAddress = useSelector((state) => state.shippingAddress);
+  const order = useSelector((state) => state.order);
 
   const {cartSummary} = cart;
   const delivery = 20000;
@@ -33,9 +36,35 @@ export default function Checkout({navigation}) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
-  function submitOrder() {
-    navigation.navigate('Success');
+  function submitOrder(totalPrice, _shippingAddress, orderStatus) {
+    const data = {
+      totalPrice,
+      shippingAddress: _shippingAddress,
+      orderStatus,
+    };
+    dispatch(orderAction.submitOrder(data, auth.token));
   }
+
+  useEffect(() => {
+    if (order.isSubmit) {
+      cart.cartData.forEach(async (item) => {
+        const data = {
+          orderId: order.submitData.insertId,
+          name: item.name,
+          quantity: item.quantity,
+          totalPrice: item.quantity * item.price,
+          itemId: item.item_id,
+          sellerId: item.seller_id,
+        };
+        await dispatch(orderAction.submitOrderDetail(data, auth.token));
+        await dispatch(cartAction.deleteCart(item.item_id, auth.token));
+      });
+      dispatch(orderAction.resetSubmit());
+      dispatch(cartAction.getCustomerCart(auth.token));
+      navigation.navigate('Success');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cart.cartData, dispatch, order.isSubmit, order.submitData.insertId]);
 
   function changeShippingAddress() {
     navigation.navigate('Shipping Address');
@@ -102,19 +131,25 @@ export default function Checkout({navigation}) {
         <View style={styles.floatingText}>
           <Text style={styles.text}>Order</Text>
           <Text style={styles.totalPrice}>
-            Rp{cartSummary.toString().replace(/(.)(?=(\d{3})+$)/g, '$1.')}
+            Rp
+            {cartSummary &&
+              cartSummary.toString().replace(/(.)(?=(\d{3})+$)/g, '$1.')}
           </Text>
         </View>
         <View style={styles.floatingText}>
           <Text style={styles.text}>Delivery</Text>
           <Text style={styles.totalPrice}>
-            Rp{delivery.toString().replace(/(.)(?=(\d{3})+$)/g, '$1.')}
+            Rp
+            {cartSummary &&
+              delivery.toString().replace(/(.)(?=(\d{3})+$)/g, '$1.')}
           </Text>
         </View>
         <View style={styles.floatingText}>
           <Text style={styles.text}>Summary</Text>
           <Text style={styles.totalPrice}>
-            Rp{total.toString().replace(/(.)(?=(\d{3})+$)/g, '$1.')}
+            Rp
+            {cartSummary &&
+              total.toString().replace(/(.)(?=(\d{3})+$)/g, '$1.')}
           </Text>
         </View>
         <Button
@@ -122,7 +157,9 @@ export default function Checkout({navigation}) {
           block
           success
           style={styles.floatingButton}
-          onPress={submitOrder}>
+          onPress={() =>
+            submitOrder(total, shippingAddress.primaryData[0].full_address, 1)
+          }>
           <Text>submit order</Text>
         </Button>
       </View>

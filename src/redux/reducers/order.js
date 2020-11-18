@@ -8,6 +8,17 @@ const initialState = {
   orderDetailIsLoading: false,
   orderDetailIsError: false,
   orderDetailAlertMsg: '',
+
+  submitIsLoading: false,
+  submitIsError: false,
+  submitAlert: '',
+  isSubmit: false,
+  submitData: {},
+
+  submitDetailIsLoading: false,
+  submitDetailIsError: false,
+  submitDetailAlert: '',
+  isSubmitDetail: false,
 };
 
 export default (state = initialState, action) => {
@@ -58,6 +69,62 @@ export default (state = initialState, action) => {
     }
     case 'DESTROY_ORDER': {
       return initialState;
+    }
+    case 'SUBMIT_ORDER_PENDING': {
+      return {
+        ...state,
+        submitIsLoading: true,
+        submitAlert: 'Submit order in progress. Please wait..',
+      };
+    }
+    case 'SUBMIT_ORDER_REJECTED': {
+      return {
+        ...state,
+        submitIsLoading: false,
+        submitIsError: true,
+        submitAlert: action.payload.response.data.message,
+      };
+    }
+    case 'SUBMIT_ORDER_FULFILLED': {
+      return {
+        ...state,
+        submitIsLoading: false,
+        submitIsError: false,
+        isSubmit: true,
+        submitAlert: 'Successfully submit new order',
+        submitData: action.payload.data.data,
+      };
+    }
+    case 'RESET_SUBMIT': {
+      return {
+        ...state,
+        isSubmit: false,
+        submitData: {},
+      };
+    }
+    case 'SUBMIT_ORDER_DETAIL_PENDING': {
+      return {
+        ...state,
+        submitDetailIsLoading: true,
+        submitDetailAlert: 'Submit order detail in progress. Please wait..',
+      };
+    }
+    case 'SUBMIT_ORDER_DETAIL_REJECTED': {
+      return {
+        ...state,
+        submitDetailIsLoading: false,
+        submitDetailIsError: true,
+        submitDetailAlert: action.payload.response.data.message,
+      };
+    }
+    case 'SUBMIT_ORDER_DETAIL_FULFILLED': {
+      return {
+        ...state,
+        submitDetailIsLoading: false,
+        submitDetailIsError: false,
+        isSubmitDetail: true,
+        submitDetailAlert: 'Successfully submit order detail',
+      };
     }
     default: {
       return state;
