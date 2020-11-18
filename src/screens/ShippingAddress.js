@@ -44,12 +44,23 @@ export default function ShippingAddress({navigation}) {
         {shippingAddress.allAddressData.length > 0 ? (
           shippingAddress.allAddressData.map((address) => {
             return (
-              <Card style={styles.card} key={address.id}>
+              <Card
+                style={
+                  address.primary_address === 1
+                    ? styles.cardSelected
+                    : styles.card
+                }
+                key={address.id}>
                 <CardItem>
                   <Body>
                     <View style={styles.cardHeader}>
                       <TouchableOpacity>
-                        <Text style={[styles.text, styles.bold]}>
+                        <Text
+                          style={
+                            address.primary_address === 1
+                              ? [styles.text, styles.bold, styles.green]
+                              : [styles.text, styles.bold]
+                          }>
                           {address.recipient_name} | {address.recipient_phone}
                         </Text>
                       </TouchableOpacity>
@@ -96,6 +107,11 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     elevation: 2,
   },
+  cardSelected: {
+    borderWidth: 2,
+    borderColor: 'green',
+    elevation: 4,
+  },
   cardHeader: {
     width: '100%',
     flexDirection: 'row',
@@ -114,5 +130,8 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 16,
+  },
+  green: {
+    color: 'green',
   },
 });
