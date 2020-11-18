@@ -139,6 +139,9 @@ export default (state = initialState, action) => {
         addIsError: false,
       };
     }
+    case 'DESTROY_CART': {
+      return initialState;
+    }
     default: {
       return state;
     }

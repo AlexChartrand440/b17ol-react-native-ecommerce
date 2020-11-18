@@ -56,6 +56,9 @@ export default (state = initialState, action) => {
         orderDetailData: action.payload.data.data,
       };
     }
+    case 'DESTROY_ORDER': {
+      return initialState;
+    }
     default: {
       return state;
     }

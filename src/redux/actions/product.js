@@ -43,4 +43,7 @@ export default {
   resetAllProducts: () => ({
     type: 'RESET_ALL_PRODUCTS',
   }),
+  destroy: () => ({
+    type: 'DESTROY_ITEM',
+  }),
 };

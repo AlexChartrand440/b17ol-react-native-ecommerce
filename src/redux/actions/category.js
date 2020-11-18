@@ -6,4 +6,7 @@ export default {
     type: 'GET_CATEGORY',
     payload: http().get('/public/category'),
   }),
+  destroy: () => ({
+    type: 'DESTROY_CATEGORY',
+  }),
 };

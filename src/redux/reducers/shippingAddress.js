@@ -215,6 +215,9 @@ export default (state = initialState, action) => {
         primaryData: action.payload.data.data,
       };
     }
+    case 'DESTROY_ADDRESS': {
+      return initialState;
+    }
     default: {
       return state;
     }

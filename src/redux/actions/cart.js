@@ -41,4 +41,7 @@ export default {
       type: 'RESET_ADD',
     };
   },
+  destroy: () => ({
+    type: 'DESTROY_CART',
+  }),
 };

@@ -64,6 +64,9 @@ export default (state = initialState, action) => {
         isEdit: false,
       };
     }
+    case 'DESTROY_PROFILE': {
+      return initialState;
+    }
     default: {
       return state;
     }

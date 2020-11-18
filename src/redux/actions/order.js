@@ -9,4 +9,7 @@ export default {
     type: 'GET_ORDER_DETAIL',
     payload: http(token).get(`/order/detail/${id}`),
   }),
+  destroy: () => ({
+    type: 'DESTROY_ORDER',
+  }),
 };

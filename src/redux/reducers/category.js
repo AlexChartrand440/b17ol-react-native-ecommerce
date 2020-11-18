@@ -30,6 +30,9 @@ export default (state = initialState, action) => {
         categoryData: action.payload.data.data,
       };
     }
+    case 'DESTROY_CATEGORY': {
+      return initialState;
+    }
     default: {
       return state;
     }

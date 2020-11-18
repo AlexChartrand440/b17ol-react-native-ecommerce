@@ -14,4 +14,7 @@ export default {
   resetEdit: () => ({
     type: 'RESET_EDIT',
   }),
+  destroy: () => ({
+    type: 'DESTROY_PROFILE',
+  }),
 };

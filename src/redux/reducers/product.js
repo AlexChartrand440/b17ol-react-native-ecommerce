@@ -191,6 +191,9 @@ export default (state = initialState, action) => {
         allProductsIsError: false,
       };
     }
+    case 'DESTROY_ITEM': {
+      return initialState;
+    }
     default: {
       return state;
     }

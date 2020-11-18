@@ -20,7 +20,12 @@ import User from '../assets/img/avatar.png';
 
 // import actions
 import authAction from '../redux/actions/auth';
+import cartAction from '../redux/actions/cart';
+import categoryAction from '../redux/actions/category';
+import orderAction from '../redux/actions/order';
+import productAction from '../redux/actions/product';
 import profileAction from '../redux/actions/profile';
+import shippingAddressAction from '../redux/actions/shippingAddress';
 
 export default function Profile({navigation}) {
   const dispatch = useDispatch();
@@ -46,6 +51,12 @@ export default function Profile({navigation}) {
 
   function logout() {
     dispatch(authAction.logout());
+    dispatch(cartAction.destroy());
+    dispatch(categoryAction.destroy());
+    dispatch(orderAction.destroy());
+    dispatch(productAction.destroy());
+    dispatch(profileAction.destroy());
+    dispatch(shippingAddressAction.destroy());
   }
 
   return (
