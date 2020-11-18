@@ -2,7 +2,11 @@ import React from 'react';
 import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import {Container, Content, Text, Card, CardItem, Body} from 'native-base';
 
-export default function Order() {
+export default function Order({navigation}) {
+  function getOrderDetail() {
+    navigation.navigate('Order Details');
+  }
+
   return (
     <Container style={styles.parent}>
       <Content padder>
@@ -10,7 +14,7 @@ export default function Order() {
         <Card style={styles.cardMargin}>
           <CardItem>
             <Body>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={getOrderDetail}>
                 <View style={[styles.cardHeader, styles.marginBottom]}>
                   <Text style={[styles.cardTitle, styles.bold]}>
                     Order No 1

@@ -29,6 +29,7 @@ import UpdateProfile from './UpdateProfile';
 import ItemAll from './ItemAll';
 import Search from './Search';
 import Order from './Order';
+import OrderDetail from './OrderDetail';
 
 // import navigator
 const Stack = createStackNavigator();
@@ -246,6 +247,13 @@ export default function Main() {
             component={Order}
             options={{
               title: '',
+            }}
+          />
+          <MainStack.Screen
+            name="Order Details"
+            component={OrderDetail}
+            options={{
+              headerTitleAlign: 'center',
             }}
           />
         </MainStack.Navigator>
