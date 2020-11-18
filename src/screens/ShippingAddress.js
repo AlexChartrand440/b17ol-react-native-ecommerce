@@ -26,10 +26,13 @@ export default function ShippingAddress({navigation}) {
   }, [dispatch]);
 
   function addShippingAddress() {
+    dispatch(shippingAddressAction.resetAddressData());
     navigation.navigate('Add Shipping Address');
   }
 
-  function updateShippingAddress() {
+  function updateShippingAddress(id) {
+    dispatch(shippingAddressAction.resetAddressData());
+    dispatch(shippingAddressAction.getShippingAddress(id, auth.token));
     navigation.navigate('Update Shipping Address');
   }
 
@@ -50,7 +53,8 @@ export default function ShippingAddress({navigation}) {
                           {address.recipient_name} | {address.recipient_phone}
                         </Text>
                       </TouchableOpacity>
-                      <TouchableOpacity onPress={updateShippingAddress}>
+                      <TouchableOpacity
+                        onPress={() => updateShippingAddress(address.id)}>
                         <Text style={[styles.text, styles.bold, styles.link]}>
                           Update
                         </Text>

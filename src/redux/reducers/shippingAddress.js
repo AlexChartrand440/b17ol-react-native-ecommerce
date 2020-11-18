@@ -18,6 +18,16 @@ const initialState = {
   addIsError: false,
   addAlert: '',
   isAdd: false,
+
+  editIsLoading: false,
+  editIsError: false,
+  editAlert: '',
+  isEdit: false,
+
+  addressData: [],
+  addressIsLoading: false,
+  addressIsError: false,
+  addressAlertMsg: '',
 };
 
 export default (state = initialState, action) => {
@@ -118,6 +128,64 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isAdd: false,
+      };
+    }
+    case 'RESET_ADDRESS_DATA': {
+      return {
+        ...state,
+        addressData: [],
+      };
+    }
+    case 'EDIT_ADDRESS_PENDING': {
+      return {
+        ...state,
+        editIsLoading: true,
+        editAlert: 'Edit shipping address in progress. Please wait..',
+      };
+    }
+    case 'EDIT_ADDRESS_REJECTED': {
+      return {
+        ...state,
+        editIsLoading: false,
+        editIsError: true,
+        editAlert: action.payload.response.data.message,
+      };
+    }
+    case 'EDIT_ADDRESS_FULFILLED': {
+      return {
+        ...state,
+        editIsLoading: false,
+        editIsError: false,
+        isEdit: true,
+        editAlert: 'Successfully edit shipping address',
+      };
+    }
+    case 'RESET_EDIT': {
+      return {
+        ...state,
+        isEdit: false,
+      };
+    }
+    case 'GET_ADDRESS_PENDING': {
+      return {
+        ...state,
+        addressIsLoading: true,
+      };
+    }
+    case 'GET_ADDRESS_REJECTED': {
+      return {
+        ...state,
+        addressIsLoading: false,
+        addressIsError: true,
+        addressAlertMsg: action.payload.response.data.message,
+      };
+    }
+    case 'GET_ADDRESS_FULFILLED': {
+      return {
+        ...state,
+        addressIsLoading: false,
+        addressIsError: false,
+        addressData: action.payload.data.data,
       };
     }
     default: {

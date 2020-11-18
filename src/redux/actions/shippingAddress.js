@@ -21,4 +21,18 @@ export default {
   resetAdd: () => ({
     type: 'RESET_ADD',
   }),
+  editShippingAddress: (id, data, token) => ({
+    type: 'EDIT_ADDRESS',
+    payload: http(token).put(`/shipping_address/${id}`, qs.stringify(data)),
+  }),
+  resetEdit: () => ({
+    type: 'RESET_EDIT',
+  }),
+  resetAddressData: () => ({
+    type: 'RESET_ADDRESS_DATA',
+  }),
+  getShippingAddress: (id, token) => ({
+    type: 'GET_ADDRESS',
+    payload: http(token).get(`/shipping_address/${id}`),
+  }),
 };
