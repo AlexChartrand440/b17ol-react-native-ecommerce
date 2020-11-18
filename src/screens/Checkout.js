@@ -41,11 +41,16 @@ export default function Checkout({navigation}) {
     navigation.navigate('Shipping Address');
   }
 
+  function addShippingAddress() {
+    dispatch(shippingAddressAction.resetAddressData());
+    navigation.navigate('Add Shipping Address');
+  }
+
   return (
     <Container style={styles.parent}>
       <Content padder>
         <Text style={styles.header}>Shipping address</Text>
-        {shippingAddress.primaryData.length > 0 ? (
+        {shippingAddress.primaryData ? (
           shippingAddress.primaryData.map((address) => {
             return (
               <Card style={styles.card} key={address.id}>
@@ -68,7 +73,19 @@ export default function Checkout({navigation}) {
             );
           })
         ) : (
-          <Text style={styles.text}>Primary shipping address not found!</Text>
+          <View>
+            <Text style={styles.text}>Primary shipping address not found!</Text>
+            <Button
+              small
+              bordered
+              rounded
+              block
+              dark
+              style={styles.button}
+              onPress={addShippingAddress}>
+              <Text>add new address</Text>
+            </Button>
+          </View>
         )}
         <Text style={styles.header}>Payment</Text>
         <View style={styles.floatingText}>
@@ -168,5 +185,9 @@ const styles = StyleSheet.create({
     width: 80,
     height: 30,
     resizeMode: 'center',
+  },
+  button: {
+    marginTop: 16,
+    marginBottom: 40,
   },
 });
