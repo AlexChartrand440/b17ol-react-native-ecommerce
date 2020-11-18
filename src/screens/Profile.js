@@ -40,6 +40,10 @@ export default function Profile({navigation}) {
     navigation.navigate('Setting');
   }
 
+  function getOrder() {
+    navigation.navigate('Order');
+  }
+
   function logout() {
     dispatch(authAction.logout());
   }
@@ -69,7 +73,7 @@ export default function Profile({navigation}) {
             );
           })}
         <List>
-          <ListItem>
+          <ListItem onPress={getOrder}>
             <Left>
               <Text style={styles.listItemText}>My Orders</Text>
             </Left>

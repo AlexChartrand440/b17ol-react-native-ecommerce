@@ -28,6 +28,7 @@ import UpdatePassword from './UpdatePassword';
 import UpdateProfile from './UpdateProfile';
 import ItemAll from './ItemAll';
 import Search from './Search';
+import Order from './Order';
 
 // import navigator
 const Stack = createStackNavigator();
@@ -238,6 +239,13 @@ export default function Main() {
             options={{
               headerTitleAlign: 'center',
               title: 'Edit Profile',
+            }}
+          />
+          <MainStack.Screen
+            name="Order"
+            component={Order}
+            options={{
+              title: '',
             }}
           />
         </MainStack.Navigator>
