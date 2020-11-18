@@ -17,7 +17,8 @@ export default function Order({navigation}) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
-  function getOrderDetail() {
+  function getOrderDetail(id) {
+    dispatch(orderAction.getOrderDetail(id, auth.token));
     navigation.navigate('Order Details');
   }
 
@@ -32,7 +33,7 @@ export default function Order({navigation}) {
               <Card style={styles.cardMargin} key={item.id}>
                 <CardItem>
                   <Body>
-                    <TouchableOpacity onPress={getOrderDetail}>
+                    <TouchableOpacity onPress={() => getOrderDetail(item.id)}>
                       <View style={[styles.cardHeader, styles.marginBottom]}>
                         <Text style={[styles.cardTitle, styles.bold]}>
                           Order No {item.id}

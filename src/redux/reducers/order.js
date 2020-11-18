@@ -3,6 +3,11 @@ const initialState = {
   orderIsLoading: false,
   orderIsError: false,
   orderAlertMsg: '',
+
+  orderDetailData: [],
+  orderDetailIsLoading: false,
+  orderDetailIsError: false,
+  orderDetailAlertMsg: '',
 };
 
 export default (state = initialState, action) => {
@@ -27,6 +32,28 @@ export default (state = initialState, action) => {
         orderIsLoading: false,
         orderIsError: false,
         orderData: action.payload.data.data,
+      };
+    }
+    case 'GET_ORDER_DETAIL_PENDING': {
+      return {
+        ...state,
+        orderDetailIsLoading: true,
+      };
+    }
+    case 'GET_ORDER_DETAIL_REJECTED': {
+      return {
+        ...state,
+        orderDetailIsLoading: false,
+        orderDetailIsError: true,
+        orderDetailAlertMsg: action.payload.response.data.message,
+      };
+    }
+    case 'GET_ORDER_DETAIL_FULFILLED': {
+      return {
+        ...state,
+        orderDetailIsLoading: false,
+        orderDetailIsError: false,
+        orderDetailData: action.payload.data.data,
       };
     }
     default: {

@@ -1,100 +1,107 @@
 import React from 'react';
 import {Image, StyleSheet, View} from 'react-native';
 import {Container, Content, Text, Card, Button} from 'native-base';
-
-// import dummy card image
-import Dummy from '../assets/img/hp.png';
+import {useSelector} from 'react-redux';
+import dayjs from 'dayjs';
+import {API_URL} from '@env';
 
 export default function OrderDetail() {
+  const order = useSelector((state) => state.order);
+  const {orderDetailData} = order;
+
   return (
     <Container style={styles.parent}>
-      <Content style={styles.padding}>
-        <View style={[styles.header, styles.marginBottom]}>
-          <Text style={[styles.text, styles.bold]}>Order No 1</Text>
-          <Text style={styles.text}>05-12-2019</Text>
-        </View>
-        <View style={[styles.orderStatus, styles.marginBottom]}>
-          <Text style={[styles.text, styles.bold, styles.green]}>Not Paid</Text>
-        </View>
-        <Text style={[styles.text, styles.marginBottom, styles.bold]}>
-          3 items
-        </Text>
-        <Card style={styles.marginBottom}>
-          <View style={styles.cardContent}>
-            <Image source={Dummy} style={styles.image} />
-            <View>
-              <Text style={styles.bold}>Item Name</Text>
-              <Text style={styles.subtext}>Store Name</Text>
-              <Text style={styles.subtext}>Units: 1</Text>
-              <Text style={[styles.bold, styles.text]}>Rp120.000</Text>
-            </View>
+      {orderDetailData.length > 0 && (
+        <Content style={styles.padding}>
+          <View style={[styles.header, styles.marginBottom]}>
+            <Text style={[styles.text, styles.bold]}>
+              Order No {orderDetailData[0].order_id}
+            </Text>
+            <Text style={styles.text}>
+              {dayjs(orderDetailData[0].created_at).format('DD-MM-YYYY')}
+            </Text>
           </View>
-        </Card>
-        <Card style={styles.marginBottom}>
-          <View style={styles.cardContent}>
-            <Image source={Dummy} style={styles.image} />
-            <View>
-              <Text style={styles.bold}>Item Name</Text>
-              <Text style={styles.subtext}>Store Name</Text>
-              <Text style={styles.subtext}>Units: 1</Text>
-              <Text style={[styles.bold, styles.text]}>Rp120.000</Text>
-            </View>
+          <View style={[styles.orderStatus, styles.marginBottom]}>
+            <Text style={[styles.text, styles.bold, styles.green]}>
+              {orderDetailData[0].status}
+            </Text>
           </View>
-        </Card>
-        <Card style={styles.marginBottom}>
-          <View style={styles.cardContent}>
-            <Image source={Dummy} style={styles.image} />
-            <View>
-              <Text style={styles.bold}>Item Name</Text>
-              <Text style={styles.subtext}>Store Name</Text>
-              <Text style={styles.subtext}>Units: 1</Text>
-              <Text style={[styles.bold, styles.text]}>Rp120.000</Text>
-            </View>
-          </View>
-        </Card>
-        <Text
-          style={[
-            styles.text,
-            styles.bold,
-            styles.marginBottom,
-            styles.marginTop,
-          ]}>
-          Order Information
-        </Text>
-        <View style={[styles.marginBottom, styles.orderInfo]}>
-          <Text style={[styles.text, styles.textLeft]}>Shipping Address:</Text>
-          <Text style={[styles.text, styles.textRight]}>
-            Jl. Putri Hijau Link IX No. 123 Blok 7 Perum Mandala, Medan,
-            Sumatera Utara, 20202
+          <Text style={[styles.text, styles.marginBottom, styles.bold]}>
+            {orderDetailData.length} items
           </Text>
-        </View>
-        <View style={[styles.marginBottom, styles.orderInfo]}>
-          <Text style={[styles.text, styles.textLeft]}>Payment Method:</Text>
-          <Text style={[styles.text, styles.textRight]}>Wakkede Payment</Text>
-        </View>
-        <View style={[styles.marginBottom, styles.orderInfo]}>
-          <Text style={[styles.text, styles.textLeft]}>Delivery Method:</Text>
-          <Text style={[styles.text, styles.textRight]}>
-            Wakkede Express, 2-3 days, Rp20.000
+          {orderDetailData.map((item) => {
+            return (
+              <Card style={styles.marginBottom} key={item.id}>
+                <View style={styles.cardContent}>
+                  <Image
+                    source={{uri: `${API_URL}${item.img_thumbnail}`}}
+                    style={styles.image}
+                  />
+                  <View>
+                    <Text style={styles.bold}>{item.name}</Text>
+                    <Text style={styles.subtext}>{item.store_name}</Text>
+                    <Text style={styles.subtext}>Units: {item.quantity}</Text>
+                    <Text style={[styles.bold, styles.text]}>
+                      Rp
+                      {item.item_price
+                        .toString()
+                        .replace(/(.)(?=(\d{3})+$)/g, '$1.')}
+                    </Text>
+                  </View>
+                </View>
+              </Card>
+            );
+          })}
+          <Text
+            style={[
+              styles.text,
+              styles.bold,
+              styles.marginBottom,
+              styles.marginTop,
+            ]}>
+            Order Information
           </Text>
-        </View>
-        <View style={[styles.marginBottom, styles.orderInfo]}>
-          <Text style={[styles.text, styles.textLeft]}>Discount:</Text>
-          <Text style={[styles.text, styles.textRight]}>-</Text>
-        </View>
-        <View style={[styles.marginBottom, styles.orderInfo]}>
-          <Text style={[styles.text, styles.textLeft]}>Total Amount:</Text>
-          <Text style={[styles.text, styles.textRight]}>Rp99.000</Text>
-        </View>
-        <View style={[styles.header, styles.marginTop, styles.marginBtn]}>
-          <Button bordered rounded dark>
-            <Text>{'        Reorder       '}</Text>
-          </Button>
-          <Button rounded success>
-            <Text>Leave Feedback</Text>
-          </Button>
-        </View>
-      </Content>
+          <View style={[styles.marginBottom, styles.orderInfo]}>
+            <Text style={[styles.text, styles.textLeft]}>
+              Shipping Address:
+            </Text>
+            <Text style={[styles.text, styles.textRight]}>
+              {orderDetailData[0].shipping_address}
+            </Text>
+          </View>
+          <View style={[styles.marginBottom, styles.orderInfo]}>
+            <Text style={[styles.text, styles.textLeft]}>Payment Method:</Text>
+            <Text style={[styles.text, styles.textRight]}>Wakkede Payment</Text>
+          </View>
+          <View style={[styles.marginBottom, styles.orderInfo]}>
+            <Text style={[styles.text, styles.textLeft]}>Delivery Method:</Text>
+            <Text style={[styles.text, styles.textRight]}>
+              Wakkede Express, 2-3 days, Rp20.000
+            </Text>
+          </View>
+          <View style={[styles.marginBottom, styles.orderInfo]}>
+            <Text style={[styles.text, styles.textLeft]}>Discount:</Text>
+            <Text style={[styles.text, styles.textRight]}>-</Text>
+          </View>
+          <View style={[styles.marginBottom, styles.orderInfo]}>
+            <Text style={[styles.text, styles.textLeft]}>Total Amount:</Text>
+            <Text style={[styles.text, styles.textRight]}>
+              Rp
+              {orderDetailData[0].total_price
+                .toString()
+                .replace(/(.)(?=(\d{3})+$)/g, '$1.')}
+            </Text>
+          </View>
+          <View style={[styles.header, styles.marginTop, styles.marginBtn]}>
+            <Button bordered rounded dark>
+              <Text>{'        Reorder       '}</Text>
+            </Button>
+            <Button rounded success>
+              <Text>Leave Feedback</Text>
+            </Button>
+          </View>
+        </Content>
+      )}
     </Container>
   );
 }
